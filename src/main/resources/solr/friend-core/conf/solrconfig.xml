@@ -39,14 +39,8 @@
         <lst name="defaults">
             <str name="defType">edismax</str>
             <str name="q.alt">*:*</str>
-            <str name="qf">
-                name
-                description
-                age
-                town
-                country
-            </str>
-            <str name="fl">id,name,description,age,town,country,countryRaw,score</str>
+            <str name="qf">name description age town country</str>
+            <str name="fl">id,name,description,age,town,country,score</str>
             <str name="mm">100%</str>
         </lst>
     </requestHandler>

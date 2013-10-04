@@ -29,8 +29,7 @@ import org.junit.rules.ExternalResource;
 /**
  * <p>
  * Resource for solr integration tests. It will use the configuration stored
- * within a given solr.xml to start up. This startup will be done <b>once</b>
- * per test class.
+ * within a given solr.xml to start up.
  * </p>
  * <p>
  * To manage the content of the index use

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-
-<schema name="example" version="1.5">
+<schema name="friends" version="1.0">
 
     <fields>
         <field name="id" 
@@ -22,41 +21,18 @@
         <field name="friends" 
             type="int" indexed="true" stored="true" multiValued="true" />
     </fields>
-
-    <copyField source="country" dest="countryRaw"/>
-    <copyField source="town" dest="townRaw"/>
+    <copyField source="country" dest="countryRaw" />
+    <copyField source="town" dest="townRaw" />
 
     <types>
         <fieldType name="string" class="solr.StrField" sortMissingLast="true" />
-        <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true" />
-        <fieldType name="int" class="solr.TrieIntField" precisionStep="0" positionIncrementGap="0" />
-        <fieldType name="float" class="solr.TrieFloatField" precisionStep="0" positionIncrementGap="0" />
-        <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0" />
-        <fieldType name="double" class="solr.TrieDoubleField" precisionStep="0" positionIncrementGap="0" />
-        <fieldType name="tint" class="solr.TrieIntField" precisionStep="8" positionIncrementGap="0" />
-        <fieldType name="tfloat" class="solr.TrieFloatField" precisionStep="8" positionIncrementGap="0" />
-        <fieldType name="tlong" class="solr.TrieLongField" precisionStep="8" positionIncrementGap="0" />
-        <fieldType name="tdouble" class="solr.TrieDoubleField" precisionStep="8" positionIncrementGap="0" />
-        <fieldType name="date" class="solr.TrieDateField" precisionStep="0" positionIncrementGap="0" />
-        <fieldType name="tdate" class="solr.TrieDateField" precisionStep="6" positionIncrementGap="0" />
-        <fieldtype name="binary" class="solr.BinaryField" />
-        <fieldType name="pint" class="solr.IntField" />
-        <fieldType name="plong" class="solr.LongField" />
-        <fieldType name="pfloat" class="solr.FloatField" />
-        <fieldType name="pdouble" class="solr.DoubleField" />
-        <fieldType name="pdate" class="solr.DateField" sortMissingLast="true" />
-        <fieldType name="random" class="solr.RandomSortField" indexed="true" />
-
+        <fieldType name="int" class="solr.TrieIntField" 
+            precisionStep="0" positionIncrementGap="0" />
         <fieldType name="text" class="solr.TextField" positionIncrementGap="100">
             <analyzer>
-                <tokenizer class="solr.WhitespaceTokenizerFactory" />
-                <filter class="solr.WordDelimiterFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="0" catenateNumbers="0" catenateAll="0"
-                    splitOnCaseChange="1" />
+                <tokenizer class="solr.StandardTokenizerFactory" />
                 <filter class="solr.LowerCaseFilterFactory" />
-                <filter class="solr.RemoveDuplicatesTokenFilterFactory" />
             </analyzer>
         </fieldType>
-
     </types>
-
 </schema>
