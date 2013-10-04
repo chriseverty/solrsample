@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
@@ -23,7 +23,6 @@ import org.apache.solr.core.SolrCore;
 import org.apache.solr.handler.dataimport.DataImportHandler;
 import org.apache.solr.request.LocalSolrQueryRequest;
 import org.apache.solr.request.SolrQueryRequest;
-import org.apache.solr.request.SolrRequestHandler;
 import org.apache.solr.response.SolrQueryResponse;
 import org.junit.rules.ExternalResource;
 
@@ -61,8 +60,8 @@ import org.junit.rules.ExternalResource;
  */
 public class EmbeddedSolrTestHarness<T extends Object> extends ExternalResource {
 
-	private static final Log LOG = LogFactory
-			.getLog(EmbeddedSolrTestHarness.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(EmbeddedSolrTestHarness.class);
 
 	public EmbeddedSolrServer server;
 	private CoreContainer container;
@@ -105,10 +104,7 @@ public class EmbeddedSolrTestHarness<T extends Object> extends ExternalResource 
 				pathToSolrXml).getFile();
 		File tmpSolrXml = new File(tmpSolrXmlPath);
 		File tmpSolrHomeDir = tmpSolrXml.getParentFile();
-		System.setProperty("solr.solr.home", tmpSolrHomeDir.getAbsolutePath());
-		CoreContainer.Initializer tmpInitializer = new CoreContainer.Initializer();
-		container = tmpInitializer.initialize();
-		container.load(tmpSolrHomeDir.getAbsolutePath(), tmpSolrXml);
+		container = CoreContainer.createAndLoad(tmpSolrHomeDir.getAbsolutePath(), tmpSolrXml);
 		if (defaultCore == null) {
 			defaultCore = container.getDefaultCoreName();
 		}
@@ -129,6 +125,9 @@ public class EmbeddedSolrTestHarness<T extends Object> extends ExternalResource 
 				server.request(tmpPing);
 			} catch (Exception e) {
 				tmpShutdownComplete = true;
+				if(!e.getMessage().startsWith("No such core")) {
+				    LOG.warn("unexpected exception when shutting down", e);
+				}
 			}
 		}
 	}
@@ -285,8 +284,8 @@ public class EmbeddedSolrTestHarness<T extends Object> extends ExternalResource 
 	
 	public void runDataImportHandler(String aHandlerName) throws InterruptedException {
 	    SolrCore tmpCore = container.getCore(container.getDefaultCoreName());
-	    Map<String, SolrRequestHandler> tmpHandlers = tmpCore.getRequestHandlers(DataImportHandler.class);
-	    DataImportHandler tmpImportHandler = (DataImportHandler) tmpHandlers.get(aHandlerName);
+	    Map<String, DataImportHandler> tmpHandlers = tmpCore.getRequestHandlers(DataImportHandler.class);
+	    DataImportHandler tmpImportHandler = tmpHandlers.get(aHandlerName);
 
 	    Map<String, String[]> tmpImportParams = new HashMap<String, String[]>();
 	    tmpImportParams.put("command", new String[]{ "full-import" });
