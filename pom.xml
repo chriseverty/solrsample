@@ -52,6 +52,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.3.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>jdk.tools</groupId>
             <artifactId>jdk.tools</artifactId>
             <version>${java.version}</version>
