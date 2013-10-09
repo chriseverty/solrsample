@@ -1,8 +1,16 @@
 package de.cheffe.solrsample;
 
+import java.io.File;
+import java.io.OutputStreamWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import liquibase.Liquibase;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.LiquibaseException;
+import liquibase.resource.FileSystemResourceAccessor;
+import liquibase.resource.ResourceAccessor;
 
 import org.junit.After;
 import org.junit.Before;
@@ -19,8 +27,13 @@ public class HSQLImportTest {
     private Connection connection;
 
     @Before
-    public void connect() {
+    public void connect() throws LiquibaseException {
         connection = hsqldb.createConnection();
+        
+        File tmpChangeSet = new File("src/main/resources/database/createDatabase.xml");
+        ResourceAccessor tmpAccessor = new FileSystemResourceAccessor();
+        Liquibase tmpLiquibase = new Liquibase(tmpChangeSet.getAbsolutePath(), tmpAccessor, new JdbcConnection(connection));
+        tmpLiquibase.update(null, new OutputStreamWriter(System.out));
     }
 
     @Test

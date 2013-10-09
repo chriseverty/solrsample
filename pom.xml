@@ -58,6 +58,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>3.0.5</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>jdk.tools</groupId>
             <artifactId>jdk.tools</artifactId>
             <version>${java.version}</version>
