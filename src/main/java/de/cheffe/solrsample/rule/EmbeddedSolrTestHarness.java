@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
@@ -24,6 +25,7 @@ import org.apache.solr.handler.dataimport.DataImportHandler;
 import org.apache.solr.request.LocalSolrQueryRequest;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.response.SolrQueryResponse;
+import org.junit.Assert;
 import org.junit.rules.ExternalResource;
 
 /**
@@ -282,9 +284,13 @@ public class EmbeddedSolrTestHarness<T extends Object> extends ExternalResource 
 	}
 	
 	public void runDataImportHandler(String aHandlerName) throws InterruptedException {
-	    SolrCore tmpCore = container.getCore(container.getDefaultCoreName());
+	    SolrCore tmpCore = container.getCore(defaultCore);
 	    Map<String, DataImportHandler> tmpHandlers = tmpCore.getRequestHandlers(DataImportHandler.class);
 	    DataImportHandler tmpImportHandler = tmpHandlers.get(aHandlerName);
+	    
+	    if(tmpImportHandler == null) {
+	        Assert.fail("No dataimport handler found for name '" + aHandlerName + "'. Known are: " + StringUtils.join(tmpHandlers.keySet(), ";"));
+	    }
 
 	    Map<String, String[]> tmpImportParams = new HashMap<String, String[]>();
 	    tmpImportParams.put("command", new String[]{ "full-import" });

@@ -60,7 +60,10 @@ public class EmbeddedHSQLDBTestHarness extends ExternalResource {
 
     public Connection createConnection() {
         try {
-            return DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/" + name, "sa", "");
+            if (port == 9001) {
+                return DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/" + name, "sa", "");
+            }
+            return DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:" + port + "/" + name, "sa", "");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

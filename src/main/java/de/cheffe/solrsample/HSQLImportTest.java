@@ -11,6 +11,7 @@ import liquibase.Liquibase;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.FileSystemResourceAccessor;
 
+import org.apache.solr.client.solrj.beans.Field;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -20,11 +21,15 @@ import org.junit.ClassRule;
 import org.junit.Test;
 
 import de.cheffe.solrsample.rule.EmbeddedHSQLDBTestHarness;
+import de.cheffe.solrsample.rule.EmbeddedSolrTestHarness;
 
 public class HSQLImportTest {
 
     @ClassRule
     public static EmbeddedHSQLDBTestHarness hsqldb = new EmbeddedHSQLDBTestHarness();
+    
+    @ClassRule
+    public static EmbeddedSolrTestHarness<Person> solr = new EmbeddedSolrTestHarness<>("dih-core");
 
     private Connection connection;
 
@@ -82,6 +87,12 @@ public class HSQLImportTest {
         Assert.assertEquals("firstname-1", tmpResultSet.getString("firstname"));
         Assert.assertEquals("lastname-1", tmpResultSet.getString("lastname"));
     }
+
+    @Test
+    public void runImport() throws Exception {
+        solr.runDataImportHandler("/dataimport");
+        Assert.assertEquals(500, solr.query("*:*").getResults().getNumFound());
+    }
     
     @After
     public void disconnect() throws SQLException {
@@ -93,7 +104,7 @@ public class HSQLImportTest {
         File tmpInsertPersonsSQL = new File("src/main/resources/database/insertPersons.sql");
         tmpInsertPersonsSQL.delete();
     }
-
+    
     private static void assertDifferenceLessThan(long expectedDiff, long expected, long actual) {
         long actualDiff = Math.abs(expected - actual);
         if (actualDiff > expectedDiff) {
@@ -101,4 +112,15 @@ public class HSQLImportTest {
         }
     }
 
+    static class Person {
+        @Field
+        public int id;
+        @Field
+        public String firstName;
+        @Field
+        public String lastName;
+        @Field
+        public String state;
+    }
+    
 }
