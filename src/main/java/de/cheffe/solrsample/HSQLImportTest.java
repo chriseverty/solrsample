@@ -40,7 +40,7 @@ public class HSQLImportTest {
             tmpInsertPersonsSQL.createNewFile();
         }
         FileWriter tmpWriter = new FileWriter(tmpInsertPersonsSQL);
-        tmpWriter.write("truncate table person;\n");
+        tmpWriter.write("truncate table person RESTART IDENTITY;\n");
         for (int i = 0; i < 500; i++) {
             tmpWriter.write("INSERT INTO person (firstname, lastname, state) VALUES ('firstname-" + i + "', 'lastname-" + i + "', '" + (i % 2) + "');\n");
             if (i % 100 == 0) {
@@ -55,7 +55,7 @@ public class HSQLImportTest {
         Connection tmpConnection = hsqldb.createConnection();
         File tmpChangeSet = new File("src/main/resources/database/createDatabase.xml");
         Liquibase tmpLiquibase = new Liquibase(tmpChangeSet.getAbsolutePath(), new FileSystemResourceAccessor(), new JdbcConnection(tmpConnection));
-        tmpLiquibase.update(null);
+    	tmpLiquibase.update(null);
         tmpConnection.close();
     }
 
@@ -67,18 +67,18 @@ public class HSQLImportTest {
     @Test
     public void fetchDate() throws Exception {
         ResultSet tmpResultSet = connection.createStatement().executeQuery("VALUES (NOW)");
-        tmpResultSet.next();
+        Assert.assertTrue(tmpResultSet.next());
+        
         long tmpDBTime = tmpResultSet.getTimestamp(1).getTime();
         long tmpCurrent = System.currentTimeMillis();
-
         assertDifferenceLessThan(20, tmpDBTime, tmpCurrent);
     }
 
     @Test
     public void selectPerson() throws Exception {
-        ResultSet tmpResultSet = connection.createStatement().executeQuery("SELECT firstname, lastname FROM person WHERE id = 1;");
-        
+        ResultSet tmpResultSet = connection.createStatement().executeQuery("SELECT firstname, lastname FROM person WHERE id = 1");
         Assert.assertTrue(tmpResultSet.next());
+
         Assert.assertEquals("firstname-1", tmpResultSet.getString("firstname"));
         Assert.assertEquals("lastname-1", tmpResultSet.getString("lastname"));
     }
