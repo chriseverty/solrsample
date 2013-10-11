@@ -27,7 +27,7 @@ public class HSQLImportTest {
 
     @ClassRule
     public static EmbeddedHSQLDBTestHarness hsqldb = new EmbeddedHSQLDBTestHarness();
-    
+
     @ClassRule
     public static EmbeddedSolrTestHarness<Person> solr = new EmbeddedSolrTestHarness<>("dih-core");
 
@@ -47,7 +47,7 @@ public class HSQLImportTest {
         FileWriter tmpWriter = new FileWriter(tmpInsertPersonsSQL);
         tmpWriter.write("truncate table person RESTART IDENTITY;\n");
         for (int i = 0; i < 500; i++) {
-            tmpWriter.write("INSERT INTO person (firstname, lastname, state) VALUES ('firstname-" + i + "', 'lastname-" + i + "', '" + (i % 2) + "');\n");
+            tmpWriter.write("INSERT INTO person (firstname, lastname, state) VALUES ('firstname-" + (i % 50) + "', 'lastname-" + (i % 22) + "', '" + (i % 2) + "');\n");
             if (i % 100 == 0) {
                 tmpWriter.write("commit;\n");
                 tmpWriter.flush();
@@ -56,11 +56,12 @@ public class HSQLImportTest {
         tmpWriter.write("commit;\n");
         tmpWriter.close();
 
-        // run liquibase to setup the database schema and load the generated persons
+        // run liquibase to setup the database schema and load the generated
+        // persons
         Connection tmpConnection = hsqldb.createConnection();
         File tmpChangeSet = new File("src/main/resources/database/createDatabase.xml");
         Liquibase tmpLiquibase = new Liquibase(tmpChangeSet.getAbsolutePath(), new FileSystemResourceAccessor(), new JdbcConnection(tmpConnection));
-    	tmpLiquibase.update(null);
+        tmpLiquibase.update(null);
         tmpConnection.close();
     }
 
@@ -68,12 +69,12 @@ public class HSQLImportTest {
     public void connect() {
         connection = hsqldb.createConnection();
     }
-    
+
     @Test
     public void fetchDate() throws Exception {
         ResultSet tmpResultSet = connection.createStatement().executeQuery("VALUES (NOW)");
         Assert.assertTrue(tmpResultSet.next());
-        
+
         long tmpDBTime = tmpResultSet.getTimestamp(1).getTime();
         long tmpCurrent = System.currentTimeMillis();
         assertDifferenceLessThan(20, tmpDBTime, tmpCurrent);
@@ -92,19 +93,20 @@ public class HSQLImportTest {
     public void runImport() throws Exception {
         solr.runDataImportHandler("/dataimport");
         Assert.assertEquals(500, solr.query("*:*").getResults().getNumFound());
+        Assert.assertEquals(32, solr.query("firstname 2").getResults().getNumFound());
     }
-    
+
     @After
     public void disconnect() throws SQLException {
         connection.close();
     }
-    
+
     @AfterClass
     public static void tearDownDatabase() throws SQLException {
         File tmpInsertPersonsSQL = new File("src/main/resources/database/insertPersons.sql");
         tmpInsertPersonsSQL.delete();
     }
-    
+
     private static void assertDifferenceLessThan(long expectedDiff, long expected, long actual) {
         long actualDiff = Math.abs(expected - actual);
         if (actualDiff > expectedDiff) {
@@ -112,7 +114,7 @@ public class HSQLImportTest {
         }
     }
 
-    static class Person {
+    public static class Person {
         @Field
         public int id;
         @Field
@@ -121,6 +123,11 @@ public class HSQLImportTest {
         public String lastName;
         @Field
         public String state;
+
+        public Person() {
+            super();
+        }
+        
     }
-    
+
 }

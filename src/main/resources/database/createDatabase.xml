@@ -17,7 +17,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="2" author="cheffe" runAlways="true" failOnError="false">
+    <changeSet id="2" author="cheffe" failOnError="false" runOnChange="true">
         <sqlFile path="insertPersons.sql" relativeToChangelogFile="true" />
     </changeSet>
 
