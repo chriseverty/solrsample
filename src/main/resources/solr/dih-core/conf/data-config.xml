@@ -1,0 +1,11 @@
+<dataConfig>
+<dataSource driver="org.hsqldb.jdbcDriver" url="jdbc:hsqldb:hsql://localhost:9001/mydb" user="sa" />
+    <document name="products">
+        <entity name="item" query="select * from person">
+            <field column="ID" name="id" />
+            <field column="FIRSTNAME" name="firstName" />
+            <field column="LASTNAME" name="lastName" />
+            <field column="STATE" name="state" />
+        </entity>
+    </document>
+</dataConfig>
