@@ -110,6 +110,7 @@ public class EmbeddedSolrTestHarness<T extends Object> extends ExternalResource 
 			defaultCore = container.getDefaultCoreName();
 		}
 		server = new EmbeddedSolrServer(container, defaultCore);
+		clearIndex();
 	}
 
 	@Override

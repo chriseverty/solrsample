@@ -32,5 +32,8 @@
     <core name="core-1" instanceDir="core-1" />
     <core name="friend-core" instanceDir="friend-core" />
     <core name="dih-core" instanceDir="dih-core" />
+    <core name="shard-1" instanceDir="shard-1" />
+    <core name="shard-2" instanceDir="shard-2" />
+    <core name="shard-unification" instanceDir="shard-unification" />
   </cores>
 </solr>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<schema name="shard-2" version="1.5">
+
+    <fields>
+        <field name="id" type="int" indexed="true" stored="true" multiValued="false" />
+        <field name="title" type="text" indexed="true" stored="true" multiValued="false" />
+        <field name="abstractText" type="text" indexed="true" stored="true" multiValued="false" />
+    </fields>
+
+    <types>
+        <fieldType name="int" class="solr.TrieIntField" precisionStep="0" positionIncrementGap="0" />
+
+        <fieldType name="text" class="solr.TextField" positionIncrementGap="100">
+            <analyzer>
+                <tokenizer class="solr.WhitespaceTokenizerFactory" />
+                <filter class="solr.WordDelimiterFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="0" catenateNumbers="0" catenateAll="0"
+                    splitOnCaseChange="1" />
+                <filter class="solr.LowerCaseFilterFactory" />
+                <filter class="solr.RemoveDuplicatesTokenFilterFactory" />
+            </analyzer>
+        </fieldType>
+
+    </types>
+
+</schema>
