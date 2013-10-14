@@ -38,6 +38,16 @@
             <version>${solr.version}</version>
             <type>jar</type>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>hadoop-common</artifactId>
+                    <groupId>org.apache.hadoop</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>hadoop-hdfs</artifactId>
+                    <groupId>org.apache.hadoop</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.solr</groupId>
@@ -45,12 +55,6 @@
             <version>${solr.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>compile</scope>
-        </dependency>
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
@@ -63,6 +67,26 @@
             <version>3.0.5</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>8.1.13.v20130916</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlet</artifactId>
+            <version>8.1.13.v20130916</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- 
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <scope>compile</scope>
+        </dependency>
+         -->
         <dependency>
             <groupId>jdk.tools</groupId>
             <artifactId>jdk.tools</artifactId>

@@ -10,7 +10,6 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.client.solrj.request.FieldAnalysisRequest;
-import org.apache.solr.client.solrj.request.SolrPing;
 import org.apache.solr.client.solrj.request.UpdateRequest;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
@@ -113,19 +112,6 @@ public class EmbeddedSolrTestHarness<T extends Object> extends ExternalResource 
 		LOG.info("shutdown embedded solr");
 		server.shutdown();
 		container.shutdown();
-		SolrPing tmpPing = new SolrPing();
-		boolean tmpShutdownComplete = false;
-		while (!tmpShutdownComplete) {
-			try {
-				Thread.sleep(500);
-				server.request(tmpPing);
-			} catch (Exception e) {
-				tmpShutdownComplete = true;
-				if(!e.getMessage().startsWith("No such core")) {
-				    LOG.warn("unexpected exception when shutting down", e);
-				}
-			}
-		}
 	}
 
 	/**

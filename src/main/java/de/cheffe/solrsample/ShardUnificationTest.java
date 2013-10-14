@@ -7,21 +7,21 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import de.cheffe.solrsample.rule.EmbeddedSolrTestHarness;
+import de.cheffe.solrsample.rule.JettySolrTestHarness;
 
 public class ShardUnificationTest {
 
 	@ClassRule
-	public static EmbeddedSolrTestHarness<UnifiedDocument> solr = new EmbeddedSolrTestHarness<>("shard-unification");
+	public static JettySolrTestHarness<UnifiedDocument> solr = new JettySolrTestHarness<>("shard-unification");
 
 	@BeforeClass
 	public static void setupShard1() {
-		solr.addBeanToIndex(new UnifiedDocument(1, "title 1", null, "description 1"));
+		solr.addBeanToIndex(new UnifiedDocument(1, "title 1", null, "description 1"), "shard-1");
 	}
 
 	@BeforeClass
 	public static void setupShard2() {
-		solr.addBeanToIndex(new UnifiedDocument(2, "title 2", "abstract 2", null));
+		solr.addBeanToIndex(new UnifiedDocument(2, "title 2", "abstract 2", null), "shard-2");
 	}
 
 	@Test
