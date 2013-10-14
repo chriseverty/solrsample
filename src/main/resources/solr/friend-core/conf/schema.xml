@@ -24,6 +24,8 @@
     <copyField source="country" dest="countryRaw" />
     <copyField source="town" dest="townRaw" />
 
+    <uniqueKey>id</uniqueKey>
+    
     <types>
         <fieldType name="string" class="solr.StrField" sortMissingLast="true" />
         <fieldType name="int" class="solr.TrieIntField" 

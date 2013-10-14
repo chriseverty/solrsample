@@ -14,8 +14,10 @@ import org.apache.solr.client.solrj.request.FieldAnalysisRequest;
 import org.apache.solr.client.solrj.request.UpdateRequest;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
+import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.params.ModifiableSolrParams;
+import org.apache.solr.common.params.UpdateParams;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.common.util.SimpleOrderedMap;
 import org.junit.rules.ExternalResource;
@@ -102,12 +104,15 @@ public class JettySolrTestHarness<T extends Object> extends ExternalResource {
         int tmpPort = 8080;
         String tmpContext = "/solr";
         jettySolr = new JettySolrRunner(tmpSolrHomeDir.getAbsolutePath(), tmpContext, tmpPort);
+
         jettySolr.start(true);
 
-        if (defaultCore == null) {
-            // TODO determine defaultCore by configuration, if not given by API
+        if (defaultCore != null) {
+            server = new HttpSolrServer("http://localhost:8080/solr/" + defaultCore);
+        } else {
+            server = new HttpSolrServer("http://localhost:8080/solr");
         }
-        server = new HttpSolrServer("http://localhost:8080/solr");
+
         clearIndex();
     }
 
@@ -145,6 +150,7 @@ public class JettySolrTestHarness<T extends Object> extends ExternalResource {
             UpdateRequest tmpUpdateRequest = new UpdateRequest(aCoreName);
             SolrInputDocument tmpDocument = server.getBinder().toSolrInputDocument(aBean);
             tmpUpdateRequest.add(tmpDocument);
+            tmpUpdateRequest.setParam(UpdateParams.COMMIT, "true");
             tmpUpdateRequest.process(server);
         } catch (IOException | SolrServerException e) {
             throw new RuntimeException(e);
@@ -188,6 +194,7 @@ public class JettySolrTestHarness<T extends Object> extends ExternalResource {
     public List<T> query(String aQuery, Class<T> aClass) {
         SolrQuery tmpQuery = new SolrQuery(aQuery);
         try {
+            LOG.info("query: " + ClientUtils.toQueryString(tmpQuery, false));
             QueryResponse tmpResponse = server.query(tmpQuery);
             return (List<T>) tmpResponse.getBeans(aClass);
         } catch (SolrServerException e) {
@@ -202,6 +209,7 @@ public class JettySolrTestHarness<T extends Object> extends ExternalResource {
      */
     public List<T> query(SolrQuery aQuery, Class<T> aClass) {
         try {
+            LOG.info("query: " + ClientUtils.toQueryString(aQuery, false));
             QueryResponse tmpResponse = server.query(aQuery);
             return (List<T>) tmpResponse.getBeans(aClass);
         } catch (SolrServerException e) {
@@ -217,6 +225,7 @@ public class JettySolrTestHarness<T extends Object> extends ExternalResource {
     public QueryResponse query(String aQuery) {
         SolrQuery tmpQuery = new SolrQuery(aQuery);
         try {
+            LOG.info("query: " + ClientUtils.toQueryString(tmpQuery, false));
             return server.query(tmpQuery);
         } catch (SolrServerException e) {
             throw new RuntimeException(e);
@@ -288,18 +297,18 @@ public class JettySolrTestHarness<T extends Object> extends ExternalResource {
 
         UpdateRequest tmpRequest = new UpdateRequest(aHandlerName);
         tmpRequest.setParams(tmpParams);
-
-        UpdateResponse tmpResponse = tmpRequest.process(server);
-        System.out.println(tmpResponse.getStatus());
+        tmpRequest.process(server);
 
         ModifiableSolrParams tmpStatusParams = new ModifiableSolrParams();
         tmpStatusParams.set("command", "status");
         String tmpStatus = "";
         do {
-            LOG.info("waiting for import to finish, status was " + tmpStatus);
-            Thread.sleep(500);
-            UpdateResponse tmpStatusResponse = tmpRequest.process(server);
-            tmpStatus = tmpStatusResponse.getResponse().get("status").toString();
+          LOG.info("waiting for import to finish, status was " + tmpStatus);
+          Thread.sleep(500);
+          UpdateRequest tmpStatusRequest = new UpdateRequest(aHandlerName);
+          tmpStatusRequest.setParams(tmpParams);
+          UpdateResponse tmpStatusResponse = tmpStatusRequest.process(server);
+          tmpStatus = tmpStatusResponse.getResponse().get("status").toString();
         } while ("busy".equals(tmpStatus));
         LOG.info("import done");
     }

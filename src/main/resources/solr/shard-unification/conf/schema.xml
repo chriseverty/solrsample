@@ -9,6 +9,8 @@
         <field name="description" type="text" indexed="true" stored="true" multiValued="false" />
     </fields>
 
+    <uniqueKey>id</uniqueKey>
+
     <types>
         <fieldType name="int" class="solr.TrieIntField" precisionStep="0" positionIncrementGap="0" />
 
@@ -21,7 +23,6 @@
                 <filter class="solr.RemoveDuplicatesTokenFilterFactory" />
             </analyzer>
         </fieldType>
-
     </types>
 
 </schema>

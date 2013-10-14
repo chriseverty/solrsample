@@ -34,7 +34,7 @@
         <maxWarmingSearchers>1</maxWarmingSearchers>
     </query>
 
-    <requestHandler name="standard" class="solr.StandardRequestHandler" default="true">
+    <requestHandler name="/select" class="solr.StandardRequestHandler" default="true">
         <!-- default values for query parameters -->
         <lst name="defaults">
             <str name="defType">edismax</str>
@@ -43,12 +43,11 @@
                 id title description abstractText
             </str>
             <str name="fl">*,score</str>
-            <str name="shards">shard-1,shard-2</str>
             <str name="mm">100%</str>
         </lst>
     </requestHandler>
     <queryParser name="edismax" class="org.apache.solr.search.ExtendedDismaxQParserPlugin" />
-    
+
     <requestHandler name="/update" class="solr.UpdateRequestHandler" />
 
     <requestHandler name="/admin/" class="org.apache.solr.handler.admin.AdminHandlers" />

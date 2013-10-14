@@ -35,5 +35,9 @@
     <core name="shard-1" instanceDir="shard-1" />
     <core name="shard-2" instanceDir="shard-2" />
     <core name="shard-unification" instanceDir="shard-unification" />
+    <shardHandlerFactory class="HttpShardHandlerFactory">
+        <int name="socketTimeOut">1000</int>
+        <int name="connTimeOut">5000</int>
+    </shardHandlerFactory>
   </cores>
 </solr>

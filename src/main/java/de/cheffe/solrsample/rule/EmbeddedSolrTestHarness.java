@@ -265,26 +265,27 @@ public class EmbeddedSolrTestHarness<T extends Object> extends ExternalResource 
 	}
 	
 	public void runDataImportHandler(String aHandlerName) throws Exception {
-        ModifiableSolrParams tmpParams = new ModifiableSolrParams();
-        tmpParams.set("command", "full-import");
-        tmpParams.set("clean", true);
-        tmpParams.set("commit", true);
-        tmpParams.set("optimize", false);
+        ModifiableSolrParams tmpImportParams = new ModifiableSolrParams();
+        tmpImportParams.set("command", "full-import");
+        tmpImportParams.set("clean", true);
+        tmpImportParams.set("commit", true);
+        tmpImportParams.set("optimize", false);
         
         UpdateRequest tmpRequest = new UpdateRequest(aHandlerName);
-        tmpRequest.setParams(tmpParams);
-        
-        UpdateResponse tmpResponse = tmpRequest.process(server);
-        System.out.println(tmpResponse.getStatus());
+        tmpRequest.setParams(tmpImportParams);
+        tmpRequest.process(server);
         
         ModifiableSolrParams tmpStatusParams = new ModifiableSolrParams();
         tmpStatusParams.set("command", "status");
         String tmpStatus = "";
         do {
           LOG.info("waiting for import to finish, status was " + tmpStatus);
-          Thread.sleep(500);
-          UpdateResponse tmpStatusResponse = tmpRequest.process(server);
+          Thread.sleep(100);
+          UpdateRequest tmpStatusRequest = new UpdateRequest(aHandlerName);
+          tmpStatusRequest.setParams(tmpStatusParams);
+          UpdateResponse tmpStatusResponse = tmpStatusRequest.process(server);
           tmpStatus = tmpStatusResponse.getResponse().get("status").toString();
+          LOG.info("status is: " + tmpStatus);
         } while ("busy".equals(tmpStatus));
         LOG.info("import done");
 	}

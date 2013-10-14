@@ -11,7 +11,7 @@
   </appender>
 
   <logger name="org.apache.solr">
-    <level value="warn" />
+    <level value="info" />
   </logger>
   
   <logger name="de.cheffe.solrsample">
