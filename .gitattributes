@@ -9,6 +9,13 @@
 *.fsproj merge=union
 *.dbproj merge=union
 
+# Custom for Java dev
+*.java   text diff=java
+*.html   text diff=html
+*.css    text
+*.js     text
+*.sql    text
+
 # Standard to msysgit
 *.doc	 diff=astextplain
 *.DOC	 diff=astextplain
