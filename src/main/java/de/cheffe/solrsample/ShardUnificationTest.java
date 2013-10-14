@@ -1,11 +1,11 @@
 package de.cheffe.solrsample;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.beans.Field;
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -23,17 +23,13 @@ public class ShardUnificationTest {
 	public static JettySolrTestHarness<UnifiedDocument> solr = new JettySolrTestHarness<>("shard-unification");
 
 	@BeforeClass
-	public static void setupShard1() throws SolrServerException {
+	public static void setupShard1() throws SolrServerException, IOException {
 		solr.addBeanToIndex(new UnifiedDocument(1, "title 1", null, "description 1"), "shard-1");
-		HttpSolrServer tmpServer = new HttpSolrServer("http://localhost:8080/solr/shard-1");
-		System.out.println(tmpServer.query(new SolrQuery("*:*")).getResults().getNumFound());
 	}
 
 	@BeforeClass
 	public static void setupShard2() throws SolrServerException {
 		solr.addBeanToIndex(new UnifiedDocument(2, "title 2", "abstract 2", null), "shard-2");
-        HttpSolrServer tmpServer = new HttpSolrServer("http://localhost:8080/solr/shard-2");
-        System.out.println(tmpServer.query(new SolrQuery("*:*")).getResults().getNumFound());
 	}
 
 	@Test
