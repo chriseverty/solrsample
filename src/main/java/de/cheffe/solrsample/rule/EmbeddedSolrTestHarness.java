@@ -4,29 +4,23 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.client.solrj.request.FieldAnalysisRequest;
 import org.apache.solr.client.solrj.request.SolrPing;
+import org.apache.solr.client.solrj.request.UpdateRequest;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.UpdateResponse;
+import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.solr.core.CoreContainer;
-import org.apache.solr.core.SolrCore;
-import org.apache.solr.handler.dataimport.DataImportHandler;
-import org.apache.solr.request.LocalSolrQueryRequest;
-import org.apache.solr.request.SolrQueryRequest;
-import org.apache.solr.response.SolrQueryResponse;
-import org.junit.Assert;
 import org.junit.rules.ExternalResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -284,39 +278,29 @@ public class EmbeddedSolrTestHarness<T extends Object> extends ExternalResource 
 		return tmpResult;
 	}
 	
-	public void runDataImportHandler(String aHandlerName) throws InterruptedException {
-	    SolrCore tmpCore = container.getCore(defaultCore);
-	    Map<String, DataImportHandler> tmpHandlers = tmpCore.getRequestHandlers(DataImportHandler.class);
-	    DataImportHandler tmpImportHandler = tmpHandlers.get(aHandlerName);
-	    
-	    if(tmpImportHandler == null) {
-	        Assert.fail("No dataimport handler found for name '" + aHandlerName + "'. Known are: " + StringUtils.join(tmpHandlers.keySet(), ";"));
-	    }
-
-	    Map<String, String[]> tmpImportParams = new HashMap<String, String[]>();
-	    tmpImportParams.put("command", new String[]{ "full-import" });
-	    tmpImportParams.put("clean", new String[]{ "true" });
-	    tmpImportParams.put("commit", new String[]{ "true" });
-	    tmpImportParams.put("optimize", new String[]{ "false" });
-	    SolrQueryRequest tmpStartImportRequest = new LocalSolrQueryRequest(tmpCore, tmpImportParams);
-
-	    LOG.info("starting import handler");
-	    SolrQueryResponse tmpStartImportResponse = new SolrQueryResponse();
-	    tmpImportHandler.handleRequest(tmpStartImportRequest, tmpStartImportResponse);
-
-	    // poll till the import is finished
-	    Map<String, String[]> tmpStatusParams = new HashMap<String, String[]>();
-	    tmpImportParams.put("command", new String[]{ "status" });
-	    SolrQueryRequest tmpStatusRequest = new LocalSolrQueryRequest(tmpCore, tmpStatusParams);
-	    String tmpStatus = "";
-	    do {
-	      LOG.info("waiting for import to finish, status was " + tmpStatus);
-	      Thread.sleep(500);
-	      SolrQueryResponse tmpStatusResponse = new SolrQueryResponse();
-	      tmpImportHandler.handleRequest(tmpStatusRequest, tmpStatusResponse);
-	      tmpStatus = tmpStatusResponse.getValues().get("status").toString();
-	    } while ("busy".equals(tmpStatus));
-	    LOG.info("import done");
+	public void runDataImportHandler(String aHandlerName) throws Exception {
+        ModifiableSolrParams tmpParams = new ModifiableSolrParams();
+        tmpParams.set("command", "full-import");
+        tmpParams.set("clean", true);
+        tmpParams.set("commit", true);
+        tmpParams.set("optimize", false);
+        
+        UpdateRequest tmpRequest = new UpdateRequest(aHandlerName);
+        tmpRequest.setParams(tmpParams);
+        
+        UpdateResponse tmpResponse = tmpRequest.process(server);
+        System.out.println(tmpResponse.getStatus());
+        
+        ModifiableSolrParams tmpStatusParams = new ModifiableSolrParams();
+        tmpStatusParams.set("command", "status");
+        String tmpStatus = "";
+        do {
+          LOG.info("waiting for import to finish, status was " + tmpStatus);
+          Thread.sleep(500);
+          UpdateResponse tmpStatusResponse = tmpRequest.process(server);
+          tmpStatus = tmpStatusResponse.getResponse().get("status").toString();
+        } while ("busy".equals(tmpStatus));
+        LOG.info("import done");
 	}
 
 }
