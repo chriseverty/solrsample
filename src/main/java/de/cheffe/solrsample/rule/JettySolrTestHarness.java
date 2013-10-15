@@ -250,6 +250,15 @@ public class JettySolrTestHarness<T extends Object> extends ExternalResource {
 		}
 	}
 
+    public QueryResponse query(SolrQuery aQuery) {
+        LOG.info("query: " + ClientUtils.toQueryString(aQuery, false));
+        try {
+            return server.query(aQuery);
+        } catch (SolrServerException e) {
+            throw new RuntimeException(e);
+        }
+    }
+	
 	/**
 	 * @param aQuery
 	 *            the query to ask the server for

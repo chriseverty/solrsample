@@ -58,6 +58,7 @@ public class ShardUnificationTest {
 				Assert.assertEquals("title 1", unifiedDoc.title);
 				Assert.assertEquals(null, unifiedDoc.abstractText);
 				Assert.assertEquals("description 1", unifiedDoc.description);
+				Assert.assertEquals("localhost:8080/solr/shard-1", unifiedDoc.shard);
 				Assert.assertFalse(tmpCheckedDoc1);
 				tmpCheckedDoc1 = true;
 			} else if (unifiedDoc.id == 2) {
@@ -65,14 +66,14 @@ public class ShardUnificationTest {
 				Assert.assertEquals("abstract 2", unifiedDoc.abstractText);
 				Assert.assertEquals(null, unifiedDoc.description);
 				Assert.assertFalse(tmpCheckedDoc2);
+				Assert.assertEquals("localhost:8080/solr/shard-2", unifiedDoc.shard);
 				tmpCheckedDoc2 = true;
 			} else {
 				Assert.fail("unexpected doc");
 			}
 		}
-
 	}
-
+    
 	public static class UnifiedDocument {
 		@Field
 		public int id;
@@ -82,6 +83,8 @@ public class ShardUnificationTest {
 		public String abstractText;
 		@Field
 		public String description;
+		@Field("[shard]")
+		public String shard;
 
 		public UnifiedDocument() {
 			super();

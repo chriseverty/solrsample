@@ -40,9 +40,9 @@
             <str name="defType">edismax</str>
             <str name="q.alt">*:*</str>
             <str name="qf">
-                id title description abstractText
+                id title description abstractText sourceShard
             </str>
-            <str name="fl">*,score</str>
+            <str name="fl">*,score, [shard]</str>
             <str name="mm">100%</str>
         </lst>
     </requestHandler>
