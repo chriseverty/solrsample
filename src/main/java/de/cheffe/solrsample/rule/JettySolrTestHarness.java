@@ -10,12 +10,14 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.JettySolrRunner;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.request.CoreAdminRequest;
 import org.apache.solr.client.solrj.request.FieldAnalysisRequest;
 import org.apache.solr.client.solrj.request.UpdateRequest;
+import org.apache.solr.client.solrj.response.CoreAdminResponse;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
-import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.common.params.CoreAdminParams.CoreAdminAction;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.common.util.SimpleOrderedMap;
@@ -63,6 +65,7 @@ public class JettySolrTestHarness<T extends Object> extends ExternalResource {
 
 	private String pathToSolrXml;
 	private String defaultCore;
+	private String baseUrl;
 
 	/**
 	 * Defines that the solr.xml is to be found within resource package 'solr'.
@@ -103,16 +106,21 @@ public class JettySolrTestHarness<T extends Object> extends ExternalResource {
 		int tmpPort = 8080;
 		String tmpContext = "/solr";
 		jettySolr = new JettySolrRunner(tmpSolrHomeDir.getAbsolutePath(), tmpContext, tmpPort);
-
 		jettySolr.start(true);
 
+		baseUrl = "http://localhost:8080/solr/";
+		
 		if (defaultCore != null) {
-			server = new HttpSolrServer("http://localhost:8080/solr/" + defaultCore);
+			server = new HttpSolrServer(baseUrl + defaultCore);
 		} else {
-			server = new HttpSolrServer("http://localhost:8080/solr");
+			server = new HttpSolrServer(baseUrl);
 		}
 
-		clearIndex();
+		if(server.ping().getStatus() != 0) {
+			LOG.warn("Solr server has a problem");
+		}
+		
+		clearIndexAll();
 	}
 
 	@Override
@@ -146,21 +154,22 @@ public class JettySolrTestHarness<T extends Object> extends ExternalResource {
 	public void addBeanToIndex(T aBean, String aCoreName) {
 		LOG.info("adding document " + aBean + " to core " + aCoreName);
 		try {
-			UpdateRequest tmpUpdateRequest = new UpdateRequest(aCoreName);
-			SolrInputDocument tmpDocument = server.getBinder().toSolrInputDocument(aBean);
-			tmpUpdateRequest.add(tmpDocument);
-
-			HttpSolrServer tmpServer = server;
-			if (aCoreName.equals(defaultCore)) {
-				tmpServer = new HttpSolrServer("http://localhost:8080/solr/" + aCoreName);
-			}
-			tmpUpdateRequest.process(tmpServer);
-			new UpdateRequest(aCoreName).setAction(UpdateRequest.ACTION.COMMIT, true, true).process(tmpServer);
+			HttpSolrServer tmpServer = getServer(aCoreName);
+			tmpServer.addBean(aBean);
+			tmpServer.commit();
 		} catch (IOException | SolrServerException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
+	private HttpSolrServer getServer(String aCoreName) {
+		HttpSolrServer tmpServer = server;
+		if (!aCoreName.equals(defaultCore)) {
+			tmpServer = new HttpSolrServer("http://localhost:8080/solr/" + aCoreName);
+		}
+		return tmpServer;
+	}
+	
 	/**
 	 * Adds a given list of beans to the index and commits them.
 	 * 
@@ -178,7 +187,7 @@ public class JettySolrTestHarness<T extends Object> extends ExternalResource {
 	}
 
 	/**
-	 * Delete all documents from the index.
+	 * Delete all documents from the index of the {@link #defaultCore}.
 	 */
 	public void clearIndex() {
 		LOG.info("clearing index");
@@ -190,6 +199,41 @@ public class JettySolrTestHarness<T extends Object> extends ExternalResource {
 		}
 	}
 
+	/**
+	 * Delete all documents from the index of the given core.
+	 */
+	public void clearIndex(String aCore) {
+		LOG.info("clearing index of core " + aCore);
+		try {
+			HttpSolrServer tmpServer = getServer(aCore);
+			tmpServer.deleteByQuery("*:*");
+			tmpServer.commit();
+		} catch (SolrServerException | IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	/**
+	 * Delete all documents from the index of the all cores.
+	 */
+	public void clearIndexAll() {
+		LOG.info("clearing all indexes");
+		try {
+			// Request core list
+			CoreAdminRequest tmpCoreRequest = new CoreAdminRequest();
+			tmpCoreRequest.setAction(CoreAdminAction.STATUS);
+			HttpSolrServer tmpServer = new HttpSolrServer(baseUrl);
+			CoreAdminResponse tmpCores = tmpCoreRequest.process(tmpServer);
+
+			// List of the cores
+			for (int i = 0; i < tmpCores.getCoreStatus().size(); i++) {
+				clearIndex(tmpCores.getCoreStatus().getName(i));
+			}
+		} catch (SolrServerException | IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	/**
 	 * @param aQuery
 	 *            the query to ask the server for

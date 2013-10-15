@@ -17,41 +17,55 @@ import de.cheffe.solrsample.rule.JettySolrTestHarness;
 
 public class ShardUnificationTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ShardUnificationTest.class);
-    
+	private static final Logger LOG = LoggerFactory.getLogger(ShardUnificationTest.class);
+
+	// start a jetty server, so that we can use solr's shard feature
+	// set the unification shard as default core
 	@ClassRule
 	public static JettySolrTestHarness<UnifiedDocument> solr = new JettySolrTestHarness<>("shard-unification");
 
 	@BeforeClass
-	public static void setupShard1() throws SolrServerException, IOException {
+	public static void setupShards() throws SolrServerException, IOException {
+		// add a document to the core shard-1
 		solr.addBeanToIndex(new UnifiedDocument(1, "title 1", null, "description 1"), "shard-1");
-	}
-
-	@BeforeClass
-	public static void setupShard2() throws SolrServerException {
+		
+		// add another document to the core shard-2
 		solr.addBeanToIndex(new UnifiedDocument(2, "title 2", "abstract 2", null), "shard-2");
 	}
 
 	@Test
 	public void queryForUnifiedSchema() {
-	    LOG.info("starting test queryForUnifiedSchema");
-	    
-	    SolrQuery tmpQuery = new SolrQuery("title");
-	    tmpQuery.set("shards", "localhost:8080/solr/shard-1,localhost:8080/solr/shard-2");
-	    tmpQuery.set("indent", true);
+		LOG.info("starting test queryForUnifiedSchema");
+
+		// check that the core shard-unification itself is empty
+		Assert.assertEquals(0, solr.query("*:*").getResults().getNumFound());
+
+		// fetch all docs via *:* query, so the two added docs should be fetched
+		// now add the two cores that hold data via the shards param
+		SolrQuery tmpQuery = new SolrQuery("*:*");
+		tmpQuery.set("shards", "localhost:8080/solr/shard-1,localhost:8080/solr/shard-2");
+		tmpQuery.set("indent", true);
+		List<UnifiedDocument> response = solr.query(tmpQuery, UnifiedDocument.class);
 		
-	    List<UnifiedDocument> response = solr.query(tmpQuery, UnifiedDocument.class);
+		// assure that we got two docs
 		Assert.assertEquals(2, response.size());
 
+		// check that the attributes are set
+		boolean tmpCheckedDoc1 = false;
+		boolean tmpCheckedDoc2 = false;
 		for (UnifiedDocument unifiedDoc : response) {
 			if (unifiedDoc.id == 1) {
 				Assert.assertEquals("title 1", unifiedDoc.title);
 				Assert.assertEquals(null, unifiedDoc.abstractText);
 				Assert.assertEquals("description 1", unifiedDoc.description);
+				Assert.assertFalse(tmpCheckedDoc1);
+				tmpCheckedDoc1 = true;
 			} else if (unifiedDoc.id == 2) {
 				Assert.assertEquals("title 2", unifiedDoc.title);
 				Assert.assertEquals("abstract 2", unifiedDoc.abstractText);
 				Assert.assertEquals(null, unifiedDoc.description);
+				Assert.assertFalse(tmpCheckedDoc2);
+				tmpCheckedDoc2 = true;
 			} else {
 				Assert.fail("unexpected doc");
 			}
