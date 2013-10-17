@@ -9,13 +9,17 @@
       <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%-50.50c] - %m%n" />
     </layout>
   </appender>
+  
+  <logger name="de.cheffe.solrsample">
+    <level value="debug" />
+  </logger>
 
   <logger name="org.apache.solr">
     <level value="warn" />
   </logger>
   
-  <logger name="de.cheffe.solrsample">
-    <level value="debug" />
+  <logger name="org.eclipse.jetty">
+    <level value="info" />
   </logger>
 
   <root>
