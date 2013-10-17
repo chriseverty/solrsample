@@ -15,6 +15,24 @@ import org.slf4j.LoggerFactory;
 
 import de.cheffe.solrsample.rule.JettySolrTestHarness;
 
+/**
+ * <p>
+ * Shows how to query two Solr cores similar to a SQL union statement, when both
+ * cores differ in terms of existing fields.
+ * </p>
+ * <p>
+ * The configuration files of the Solr instance and their cores can be found
+ * under
+ * <ul>
+ * <li>src/main/resources/solr
+ * <li>src/main/resources/solr/shard-1
+ * <li>src/main/resources/solr/shard-2
+ * <li>src/main/resources/solr/shard-unification
+ * </ul>
+ * </p>
+ * 
+ * @author cheffe
+ */
 public class ShardUnificationTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ShardUnificationTest.class);
@@ -28,7 +46,7 @@ public class ShardUnificationTest {
 	public static void setupShards() throws SolrServerException, IOException {
 		// add a document to the core shard-1
 		solr.addBeanToIndex(new UnifiedDocument(1, "title 1", null, "description 1"), "shard-1");
-		
+
 		// add another document to the core shard-2
 		solr.addBeanToIndex(new UnifiedDocument(2, "title 2", "abstract 2", null), "shard-2");
 	}
@@ -46,7 +64,7 @@ public class ShardUnificationTest {
 		tmpQuery.set("shards", "localhost:8080/solr/shard-1,localhost:8080/solr/shard-2");
 		tmpQuery.set("indent", true);
 		List<UnifiedDocument> response = solr.query(tmpQuery, UnifiedDocument.class);
-		
+
 		// assure that we got two docs
 		Assert.assertEquals(2, response.size());
 
@@ -73,7 +91,7 @@ public class ShardUnificationTest {
 			}
 		}
 	}
-    
+
 	public static class UnifiedDocument {
 		@Field
 		public int id;
