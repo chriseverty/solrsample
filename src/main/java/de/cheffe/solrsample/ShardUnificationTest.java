@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.cheffe.solrsample.rule.JettySolrTestHarness;
+import de.cheffe.solrsample.rule.JettySolrServerResource;
 
 /**
  * <p>
@@ -40,7 +40,7 @@ public class ShardUnificationTest {
 	// start a jetty server, so that we can use solr's shard feature
 	// set the unification shard as default core
 	@ClassRule
-	public static JettySolrTestHarness<UnifiedDocument> solr = new JettySolrTestHarness<>("shard-unification");
+	public static JettySolrServerResource<UnifiedDocument> solr = new JettySolrServerResource<>("shard-unification");
 
 	@BeforeClass
 	public static void setupShards() throws SolrServerException, IOException {

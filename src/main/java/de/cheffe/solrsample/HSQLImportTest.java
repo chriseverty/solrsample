@@ -21,7 +21,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 
 import de.cheffe.solrsample.rule.EmbeddedHSQLDBTestHarness;
-import de.cheffe.solrsample.rule.EmbeddedSolrTestHarness;
+import de.cheffe.solrsample.rule.EmbeddedSolrServerResource;
 
 public class HSQLImportTest {
 
@@ -29,7 +29,7 @@ public class HSQLImportTest {
     public static EmbeddedHSQLDBTestHarness hsqldb = new EmbeddedHSQLDBTestHarness();
 
     @ClassRule
-    public static EmbeddedSolrTestHarness<Person> solr = new EmbeddedSolrTestHarness<>("dih-core");
+    public static EmbeddedSolrServerResource<Person> solr = new EmbeddedSolrServerResource<>("dih-core");
 
     private Connection connection;
 

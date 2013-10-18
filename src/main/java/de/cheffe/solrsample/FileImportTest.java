@@ -5,12 +5,12 @@ import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import de.cheffe.solrsample.rule.EmbeddedSolrTestHarness;
+import de.cheffe.solrsample.rule.EmbeddedSolrServerResource;
 
 public class FileImportTest {
 
     @ClassRule
-    public static EmbeddedSolrTestHarness<Object> h = new EmbeddedSolrTestHarness<>();
+    public static EmbeddedSolrServerResource<Object> h = new EmbeddedSolrServerResource<>();
 
     @Test
     public void runFileImport() throws Exception {

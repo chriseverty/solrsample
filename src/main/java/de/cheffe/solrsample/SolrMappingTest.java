@@ -8,12 +8,12 @@ import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import de.cheffe.solrsample.rule.EmbeddedSolrTestHarness;
+import de.cheffe.solrsample.rule.EmbeddedSolrServerResource;
 
 public class SolrMappingTest {
 
     @ClassRule
-    public static EmbeddedSolrTestHarness<SampleDocument> h = new EmbeddedSolrTestHarness<>();
+    public static EmbeddedSolrServerResource<SampleDocument> h = new EmbeddedSolrServerResource<>();
 
     @Test
     public void add() throws Exception {

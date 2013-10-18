@@ -12,12 +12,12 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import de.cheffe.solrsample.rule.EmbeddedSolrTestHarness;
+import de.cheffe.solrsample.rule.EmbeddedSolrServerResource;
 
 public class FriendJoinTest {
 
     @ClassRule
-    public static EmbeddedSolrTestHarness<Friend> solr = new EmbeddedSolrTestHarness<>("friend-core");
+    public static EmbeddedSolrServerResource<Friend> solr = new EmbeddedSolrServerResource<>("friend-core");
 
     @BeforeClass
     public static void setup() {
@@ -41,7 +41,7 @@ public class FriendJoinTest {
         friendOfGeorgeQuery.setFields("countryRaw").setRows(0);
         friendOfGeorgeQuery.setFacet(true).addFacetField("countryRaw").setFacetMinCount(1);
         
-        QueryResponse response = solr.server.query(friendOfGeorgeQuery);
+        QueryResponse response = solr.query(friendOfGeorgeQuery);
         for(FacetField.Count count : response.getFacetField("countryRaw").getValues()) {
             System.out.print("  ");
             System.out.println(count);
@@ -52,7 +52,7 @@ public class FriendJoinTest {
     public void listPersonsWithFriendsOfCertainAge() throws SolrServerException {
         System.out.println("list persons that have friends that are of age 30 or older");
         SolrQuery query = new SolrQuery("{!join from=id to=friends}age:[30 TO *]");
-        printFriendResult(solr.server.query(query).getBeans(Friend.class));        
+        printFriendResult(solr.query(query).getBeans(Friend.class));        
     }
     
     private void printFriendResult(List<Friend> foundFriends) {
