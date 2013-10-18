@@ -245,26 +245,29 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
     public void runDataImportHandler(String aHandlerName) throws Exception {
     	ModifiableSolrParams tmpParams = new ModifiableSolrParams();
     	tmpParams.set("command", "full-import");
-    	tmpParams.set("clean", true);
-    	tmpParams.set("commit", true);
+    	tmpParams.set("clean", false);
+    	tmpParams.set("commit", false);
     	tmpParams.set("optimize", false);
     
     	UpdateRequest tmpRequest = new UpdateRequest(aHandlerName);
     	tmpRequest.setParams(tmpParams);
+    	
     	SolrServer tmpServer = getServer();
     	tmpRequest.process(tmpServer);
     
     	ModifiableSolrParams tmpStatusParams = new ModifiableSolrParams();
     	tmpStatusParams.set("command", "status");
-    	String tmpStatus = "";
+    	String tmpStatus = "busy";
     	do {
-    		LOG.info("waiting for import to finish, status was " + tmpStatus);
+    		LOG.info("waiting for import to finish, status was busy");
     		Thread.sleep(500);
     		UpdateRequest tmpStatusRequest = new UpdateRequest(aHandlerName);
-    		tmpStatusRequest.setParams(tmpParams);
+    		tmpStatusRequest.setParams(tmpStatusParams);
     		UpdateResponse tmpStatusResponse = tmpStatusRequest.process(tmpServer);
     		tmpStatus = tmpStatusResponse.getResponse().get("status").toString();
+    		LOG.info("import status is " + tmpStatus);
     	} while ("busy".equals(tmpStatus));
+    	tmpServer.commit(true, true);
     	LOG.info("import done");
     }
 
