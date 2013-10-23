@@ -93,20 +93,22 @@ public class JettySolrServerResource<T extends Object> extends AbstractSolrServe
 		jettySolr.start(true);
 
 		baseUrl = "http://localhost:8080/solr/";
-		
 		if (defaultCore != null) {
-			server = new HttpSolrServer(baseUrl + defaultCore);
-		} else {
-			server = new HttpSolrServer(baseUrl);
+			baseUrl += defaultCore;
 		}
+		server = new HttpSolrServer(baseUrl);
 
 		rootServer = new HttpSolrServer("http://localhost:8080/solr");
-		
-		if(server.ping().getStatus() != 0) {
+
+		if (server.ping().getStatus() != 0) {
 			LOG.warn("Solr server has a problem");
 		}
-		
+
 		clearIndexAll();
+	}
+
+	public String getURL() {
+		return baseUrl;
 	}
 
 	@Override
@@ -121,22 +123,22 @@ public class JettySolrServerResource<T extends Object> extends AbstractSolrServe
 		}
 	}
 
-    @Override
+	@Override
 	protected SolrServer switchCore(String aCoreName) {
 		if (!server.getBaseURL().endsWith(aCoreName)) {
-		    server = new HttpSolrServer("http://localhost:8080/solr/" + aCoreName);
+			server = new HttpSolrServer("http://localhost:8080/solr/" + aCoreName);
 		}
 		return server;
 	}
 
-    @Override
-    protected SolrServer getRootServer() {
-        return rootServer;
-    }
+	@Override
+	protected SolrServer getRootServer() {
+		return rootServer;
+	}
 
-    @Override
-    protected SolrServer getServer() {
-        return server;
-    }
+	@Override
+	protected SolrServer getServer() {
+		return server;
+	}
 
 }

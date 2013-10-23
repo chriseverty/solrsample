@@ -5,17 +5,20 @@ import java.io.IOException;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.beans.Field;
+import org.apache.solr.client.solrj.util.ClientUtils;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.restlet.resource.ClientResource;
+import org.restlet.resource.ResourceException;
 
-import de.cheffe.solrsample.rule.EmbeddedSolrServerResource;
-
+import de.cheffe.solrsample.rule.JettySolrServerResource;
 
 public class TermVectorComponentTest {
 
 	@ClassRule
-	public static EmbeddedSolrServerResource<Document> solr = new EmbeddedSolrServerResource<>("term-vector");
+	public static JettySolrServerResource<Document> solr = new JettySolrServerResource<>("term-vector");
 
 	@BeforeClass
 	public static void setupShards() throws SolrServerException, IOException {
@@ -24,13 +27,18 @@ public class TermVectorComponentTest {
 	}
 
 	@Test
-	public void asdf() {
+	public void asdf() throws ResourceException, IOException {
+		// use the solr query as builder
 		SolrQuery query = new SolrQuery("title");
 		query.set("tv", true);
 		query.set("tv.positions", true);
-		solr.query(query);
+		Assert.assertEquals(2, solr.query(query).getResults().getNumFound());
+		
+		// combine solr parameter with base url
+		String tmpQueryString = solr.getURL() + ClientUtils.toQueryString(query, false);
+		new ClientResource(tmpQueryString).get().write(System.out);  
 	}
-	
+
 	public static class Document {
 		@Field
 		public int id;
