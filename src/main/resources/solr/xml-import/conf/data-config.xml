@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataConfig>
+  <dataSource type="FileDataSource" encoding="UTF-8" />
+  <document>
+    <entity name="page" processor="XPathEntityProcessor" stream="true" url="src\main\resources\xml-import"  
+      forEach="/doc" transformer="RegexTransformer,DateFormatTransformer">
+      <field column="file" name="id"/>
+      <field column="to" xpath="/note/to" indexed="true" multiValued="false"/>
+      <field column="from" xpath="/note/from" indexed="true" multiValued="false"/>
+      <field column="heading" xpath="/note/heading" indexed="true" multiValued="false"/>
+      <field column="body" xpath="/note/body" indexed="true" multiValued="false"/>
+    </entity>
+  </document>
+</dataConfig>
