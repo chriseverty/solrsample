@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<config>
+
+    <luceneMatchVersion>LUCENE_44</luceneMatchVersion>
+
+    <abortOnConfigurationError>true</abortOnConfigurationError>
+
+    <indexConfig>
+        <writeLockTimeout>20000</writeLockTimeout>
+        <ramBufferSizeMB>32</ramBufferSizeMB>
+        <maxBufferedDocs>50000</maxBufferedDocs>
+        <mergeFactor>6</mergeFactor>
+        <lockType>single</lockType>
+        <unlockOnStartup>false</unlockOnStartup>
+        <reopenReaders>true</reopenReaders>
+        <infoStream file="INFOSTREAM.txt">false</infoStream>
+    </indexConfig>
+
+    <updateHandler class="solr.DirectUpdateHandler2">
+        <maxPendingDeletes>1000</maxPendingDeletes>
+    </updateHandler>
+
+    <query>
+        <maxBooleanClauses>1024</maxBooleanClauses>
+        <filterCache class="solr.LRUCache" size="512" initialSize="512" autowarmCount="0" />
+        <queryResultCache class="solr.LRUCache" size="512" initialSize="512" autowarmCount="256" />
+        <documentCache class="solr.LRUCache" size="512" initialSize="512" autowarmCount="0" />
+        <enableLazyFieldLoading>true</enableLazyFieldLoading>
+        <queryResultWindowSize>50</queryResultWindowSize>
+        <queryResultMaxDocsCached>200</queryResultMaxDocsCached>
+        <HashDocSet maxSize="3000" loadFactor="0.75" />
+        <useColdSearcher>false</useColdSearcher>
+        <maxWarmingSearchers>1</maxWarmingSearchers>
+    </query>
+
+    <requestHandler name="standard" class="solr.StandardRequestHandler" default="true">
+        <!-- default values for query parameters -->
+        <lst name="defaults">
+            <str name="defType">edismax</str>
+            <str name="q.alt">*:*</str>
+            <str name="qf">name description age town country</str>
+            <str name="fl">id,name,description,age,town,country,score</str>
+            <str name="mm">100%</str>
+        </lst>
+    </requestHandler>
+    
+    <queryParser name="edismax" class="org.apache.solr.search.ExtendedDismaxQParserPlugin" />
+    
+    <queryParser name="join" class="org.apache.solr.search.JoinQParserPlugin" />
+    
+    <requestHandler name="/update" class="solr.UpdateRequestHandler" />
+
+    <requestHandler name="/admin/" class="org.apache.solr.handler.admin.AdminHandlers" />
+
+    <requestHandler name="/admin/ping" class="solr.PingRequestHandler">
+        <lst name="invariants">
+            <str name="q">42</str>
+        </lst>
+        <lst name="defaults">
+            <str name="echoParams">all</str>
+            <str name="df">id</str>
+        </lst>
+        <!-- <str name="healthcheckFile">server-enabled.txt</str> -->
+    </requestHandler>
+
+    <requestHandler name="/analysis/field" startup="lazy" class="solr.FieldAnalysisRequestHandler" />
+
+    <admin>
+        <defaultQuery>*:*</defaultQuery>
+    </admin>
+
+</config>
