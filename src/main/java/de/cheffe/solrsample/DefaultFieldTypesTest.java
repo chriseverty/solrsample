@@ -20,25 +20,38 @@ public class DefaultFieldTypesTest {
     @Test
     public void printDefaults() {
         Map<String, SchemaField> fields = new TreeMap<>(solr.getDefaultCoreSchema().getFields());
-        System.out.println("type\tindexed\tstored\tomitNorms\tomitTermFreqAndPositions\ttokenized");
-        for(Entry<String, SchemaField> field : fields.entrySet()) {
-            System.out.print(field.getKey() + "\t");
+
+        // show the default values
+        for (Entry<String, SchemaField> field : fields.entrySet()) {
+            System.out.println(field.getValue());
+        }
+
+        // now print the nice table
+        System.out.println("type\t\tindexed\tstored\tomitNorms\tomitTermFreqAndPositions\ttokenized");
+        for (Entry<String, SchemaField> field : fields.entrySet()) {
+            if(!field.getKey().equals("textField")) {
+                System.out.print(field.getKey() + "\t\t");
+            } else {
+                System.out.print(field.getKey() + "\t");
+            }
             String properties = FieldHelper.fieldPropertiesToString(field.getValue().getProperties());
-            printProperty(properties, "indexed");
-            printProperty(properties, "stored");
-            printProperty(properties, "omitNorms");
-            printProperty(properties, "omitTermFreqAndPositions");
-            printProperty(properties, "tokenized");
+            printProperty(properties, "indexed", 1);
+            printProperty(properties, "stored", 1);
+            printProperty(properties, "omitNorms", 2);
+            printProperty(properties, "omitTermFreqAndPositions", 4);
+            printProperty(properties, "tokenized", 1);
             System.out.println();
         }
     }
 
-    private void printProperty(String properties, String tmpProperty) {
-        if(properties.contains(tmpProperty)) {
-            System.out.print("true\t");
+    private void printProperty(String aProperties, String aProperty, int aNumTabs) {
+        if(aProperties.contains(aProperty)) {
+            System.out.print("true");
         } else {
-            System.out.print("false\t");
+            System.out.print("false");
+        }
+        for(int i=0; i<aNumTabs; i++) {
+            System.out.print("\t");
         }
     }
-    
 }
