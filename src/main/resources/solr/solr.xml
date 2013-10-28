@@ -30,7 +30,9 @@
   -->
   <cores adminPath="/admin/cores" defaultCoreName="core-1">
     <core name="core-1" instanceDir="core-1" />
+    <core name="defaultFieldTypes" instanceDir="defaultFieldTypes" />
     <core name="friend-core" instanceDir="friend-core" />
+    <core name="mlt" instanceDir="mlt" />
     <core name="self-import" instanceDir="self-import" />
     <core name="dih-core" instanceDir="dih-core" />
     <core name="shard-1" instanceDir="shard-1" />

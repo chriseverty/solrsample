@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.core.CoreContainer;
+import org.apache.solr.schema.IndexSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -117,4 +118,8 @@ public class EmbeddedSolrServerResource<T extends Object> extends AbstractSolrSe
         return server;
     }
 
+    public IndexSchema getDefaultCoreSchema() {
+        return container.getCore(defaultCore).getLatestSchema();
+    }
+    
 }

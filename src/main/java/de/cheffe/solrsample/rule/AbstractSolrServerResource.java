@@ -77,7 +77,7 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
 		try {
 			SolrServer tmpServer = getServer();
 			tmpServer.addBeans(aBeans);
-			tmpServer.commit();
+			tmpServer.commit(true, true);
 		} catch (SolrServerException | IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -286,5 +286,5 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
 			throw new RuntimeException(e);
 		}
 	}
-
+	
 }
