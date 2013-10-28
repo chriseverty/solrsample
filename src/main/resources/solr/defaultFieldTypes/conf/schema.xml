@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<schema name="example" version="1.5">
+
+    <fields>
+        <field name="string" type="string" />
+        <field name="boolean" type="boolean" />
+        <field name="int" type="int" />
+        <field name="float" type="float" />
+        <field name="long" type="long" />
+        <field name="double" type="double" />
+        <field name="tint" type="tint" />
+        <field name="tfloat" type="tfloat" />
+        <field name="tlong" type="tlong" />
+        <field name="tdouble" type="tdouble" />
+        <field name="date" type="date" />
+        <field name="tdate" type="tdate" />
+        <field name="binary" type="binary" />
+        <field name="pint" type="pint" />
+        <field name="plong" type="plong" />
+        <field name="pfloat" type="pfloat" />
+        <field name="pdouble" type="pdouble" />
+        <field name="pdate" type="pdate" />
+        <field name="random" type="random" />
+        <field name="textField" type="textField"/>
+    </fields>
+
+    <types>
+        <fieldType name="string" class="solr.StrField" />
+        
+        <fieldType name="boolean" class="solr.BoolField" />
+        
+        <fieldType name="int" class="solr.TrieIntField" />
+        <fieldType name="float" class="solr.TrieFloatField" />
+        <fieldType name="long" class="solr.TrieLongField" />
+        <fieldType name="double" class="solr.TrieDoubleField" />
+        
+        <fieldType name="tint" class="solr.TrieIntField" />
+        <fieldType name="tfloat" class="solr.TrieFloatField" />
+        <fieldType name="tlong" class="solr.TrieLongField" />
+        <fieldType name="tdouble" class="solr.TrieDoubleField" />
+        
+        <fieldType name="date" class="solr.TrieDateField" />
+        <fieldType name="tdate" class="solr.TrieDateField" />
+        
+        <fieldtype name="binary" class="solr.BinaryField" />
+        
+        <fieldType name="pint" class="solr.IntField" />
+        <fieldType name="plong" class="solr.LongField" />
+        <fieldType name="pfloat" class="solr.FloatField" />
+        <fieldType name="pdouble" class="solr.DoubleField" />
+        <fieldType name="pdate" class="solr.DateField" />
+        
+        <fieldType name="random" class="solr.RandomSortField" />
+
+
+        <fieldType name="textField" class="solr.TextField">
+            <analyzer>
+                <tokenizer class="solr.WhitespaceTokenizerFactory" />
+            </analyzer>
+        </fieldType>
+
+    </types>
+
+</schema>
