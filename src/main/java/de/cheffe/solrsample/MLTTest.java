@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.beans.Field;
-import org.apache.solr.core.SolrConfig;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
