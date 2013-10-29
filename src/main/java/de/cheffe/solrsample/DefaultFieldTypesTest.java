@@ -27,31 +27,29 @@ public class DefaultFieldTypesTest {
         }
 
         // now print the nice table
-        System.out.println("type\t\tindexed\tstored\tomitNorms\tomitTermFreqAndPositions\ttokenized");
+        String newLineMark = System.getProperty("line.separator");
+        System.out.println("+-----------+---------+--------+-----------+------------------------+-----------+");
+        System.out.println("|   Type    | indexed | stored | omitNorms |omitTermFreqAndPositions| tokenized |");
+        System.out.println("+-----------+---------+--------+-----------+------------------------+-----------+");
+        String leftAlignFormat = "| %-9s | %-7s | %-6s | %-9s | %-22s | %-9s |" + newLineMark;
         for (Entry<String, SchemaField> field : fields.entrySet()) {
-            if(!field.getKey().equals("textField")) {
-                System.out.print(field.getKey() + "\t\t");
-            } else {
-                System.out.print(field.getKey() + "\t");
-            }
             String properties = FieldHelper.fieldPropertiesToString(field.getValue().getProperties());
-            printProperty(properties, "indexed", 1);
-            printProperty(properties, "stored", 1);
-            printProperty(properties, "omitNorms", 2);
-            printProperty(properties, "omitTermFreqAndPositions", 4);
-            printProperty(properties, "tokenized", 1);
-            System.out.println();
+            //@formatter:off
+            System.out.format(leftAlignFormat, field.getKey(), 
+                    printProperty(properties, "indexed"),
+                    printProperty(properties, "stored"),
+                    printProperty(properties, "omitNorms"),
+                    printProperty(properties, "omitTermFreqAndPositions"),
+                    printProperty(properties, "tokenized"));
+            //@formatter:on
         }
+        System.out.format("+-----------+---------+--------+-----------+------------------------+-----------+" + newLineMark);
     }
 
-    private void printProperty(String aProperties, String aProperty, int aNumTabs) {
-        if(aProperties.contains(aProperty)) {
-            System.out.print("true");
-        } else {
-            System.out.print("false");
+    private String printProperty(String aProperties, String aProperty) {
+        if (aProperties.contains(aProperty)) {
+            return "true";
         }
-        for(int i=0; i<aNumTabs; i++) {
-            System.out.print("\t");
-        }
+        return "false";
     }
 }
