@@ -11,11 +11,11 @@ import de.cheffe.solrsample.rule.EmbeddedSolrServerResource;
 public class PingTest {
 
 	@ClassRule
-	public static EmbeddedSolrServerResource<Object> h = new EmbeddedSolrServerResource<>();
+	public static EmbeddedSolrServerResource<Object> solr = new EmbeddedSolrServerResource<>();
 
 	@Test
 	public void ping() throws Exception {
-		SolrPingResponse tmpPingResponse = h.ping();
+		SolrPingResponse tmpPingResponse = solr.ping();
 		Assert.assertEquals("OK", tmpPingResponse.getResponse().get("status"));
 	}
 
