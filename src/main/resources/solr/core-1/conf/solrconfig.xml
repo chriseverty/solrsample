@@ -71,6 +71,8 @@
         </lst>
     </requestHandler>
 
+    <transformer name="core" class="org.apache.solr.response.transform.CoreAugmenterFactory" />
+
     <admin>
         <defaultQuery>*:*</defaultQuery>
     </admin>

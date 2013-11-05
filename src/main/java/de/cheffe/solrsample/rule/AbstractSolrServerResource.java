@@ -17,6 +17,7 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.SolrPingResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
+import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.params.CoreAdminParams.CoreAdminAction;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.util.NamedList;
@@ -83,6 +84,17 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
 		}
 	}
 
+	public void addToIndex(SolrInputDocument aInputDocument) {
+		LOG.info("adding document to index " + aInputDocument);
+		try {
+			SolrServer tmpServer = getServer();
+			tmpServer.add(aInputDocument);
+			tmpServer.commit(true, true);
+		} catch (SolrServerException | IOException e) {
+			throw new RuntimeException(e);
+		}		
+	}
+	
 	/**
 	 * Delete all documents from the index of the {@link #defaultCore}.
 	 */
@@ -224,12 +236,17 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
 	 * @return the tokens that would used to query against the index
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<String> analyseQueryTime(String aFieldType, String aRawText) throws SolrServerException, IOException {
+	public List<String> analyseQueryTime(String aFieldType, String aRawText) {
 		FieldAnalysisRequest tmpRequest = new FieldAnalysisRequest();
 		tmpRequest.setFieldTypes(Arrays.asList(aFieldType));
 		tmpRequest.setQuery(aRawText);
 
-		NamedList<Object> tmpResponse = getServer().request(tmpRequest);
+		NamedList<Object> tmpResponse;
+		try {
+			tmpResponse = getServer().request(tmpRequest);
+		} catch (SolrServerException | IOException e) {
+			throw new RuntimeException(e);
+		}
 		tmpResponse = (NamedList<Object>) tmpResponse.get("analysis");
 		tmpResponse = (NamedList<Object>) tmpResponse.get("field_types");
 		tmpResponse = (NamedList<Object>) tmpResponse.get(aFieldType);
