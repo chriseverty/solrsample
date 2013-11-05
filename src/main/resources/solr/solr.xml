@@ -30,6 +30,7 @@
   -->
   <cores adminPath="/admin/cores" defaultCoreName="core-1">
     <core name="core-1" instanceDir="core-1" />
+    <core name="cyrillic" instanceDir="cyrillic" />
     <core name="defaultFieldTypes" instanceDir="defaultFieldTypes" />
     <core name="friend-core" instanceDir="friend-core" />
     <core name="mlt" instanceDir="mlt" />
