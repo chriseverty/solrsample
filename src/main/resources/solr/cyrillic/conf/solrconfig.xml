@@ -47,6 +47,17 @@
         </lst>
     </requestHandler>
     <queryParser name="edismax" class="org.apache.solr.search.ExtendedDismaxQParserPlugin" />
+    
+    <requestHandler name="/spellCheckCompRH" class="solr.SearchHandler">
+        <lst name="defaults">
+            <str name="spellcheck.onlyMorePopular">false</str>
+            <str name="spellcheck.extendedResults">false</str>
+            <str name="spellcheck.count">1</str>
+        </lst>
+        <arr name="last-components">
+            <str>spellcheck</str>
+        </arr>
+    </requestHandler>
 
     <requestHandler name="/update" class="solr.UpdateRequestHandler" />
 
