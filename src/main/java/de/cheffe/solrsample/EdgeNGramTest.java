@@ -10,17 +10,22 @@ import de.cheffe.solrsample.rule.EmbeddedSolrServerResource;
 public class EdgeNGramTest {
 
 	@ClassRule
-	public static EmbeddedSolrServerResource<Object> h = new EmbeddedSolrServerResource<>();
+	public static EmbeddedSolrServerResource<Object> solr = new EmbeddedSolrServerResource<>();
 
 	@Test
-	public void analyse() throws Exception {
+	public void analyse() {
 	    Assert.assertArrayEquals(
 	            new String[] {"samp", "sampl", "sample"}, 
-	            h.analyseQueryTime("ngram", "sample one").toArray());
+	            solr.analyseQueryTime("ngram", "sample one").toArray());
 
 	       Assert.assertArrayEquals(
 	                new String[] {"jone", "jones"}, 
-	                h.analyseQueryTime("ngram", "jones").toArray());
+	                solr.analyseQueryTime("ngram", "jones").toArray());
+	}
+	
+	@Test
+	public void analyseTitleSuggestion() {
+	    System.out.println(solr.analyseQueryTime("title_suggestion", "TDK iClassic iPod Dock"));
 	}
 
 }

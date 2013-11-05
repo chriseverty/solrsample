@@ -48,6 +48,19 @@
             </analyzer>
         </fieldType>
 
+        <fieldType name="title_suggestion" class="solr.TextField">
+            <analyzer type="index"> 
+                <charFilter class="solr.HTMLStripCharFilterFactory" />
+                <tokenizer class="solr.NGramTokenizerFactory" minGramSize="1" maxGramSize="150"/>
+                <filter class="solr.LowerCaseFilterFactory"/>
+            </analyzer>
+            <analyzer type="query"> 
+                <charFilter class="solr.HTMLStripCharFilterFactory" />
+                <tokenizer class="solr.NGramTokenizerFactory" minGramSize="1" maxGramSize="150"/>
+                <filter class="solr.LowerCaseFilterFactory"/>
+            </analyzer>
+        </fieldType>
+
     </types>
 
 </schema>
