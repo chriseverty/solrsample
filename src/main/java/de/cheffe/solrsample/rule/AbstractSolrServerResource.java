@@ -224,17 +224,12 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
 	 * @return the tokens that would used to query against the index
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<String> analyseQueryTime(String aFieldType, String aRawText) {
+	public List<String> analyseQueryTime(String aFieldType, String aRawText) throws SolrServerException, IOException {
 		FieldAnalysisRequest tmpRequest = new FieldAnalysisRequest();
 		tmpRequest.setFieldTypes(Arrays.asList(aFieldType));
 		tmpRequest.setQuery(aRawText);
 
-		NamedList<Object> tmpResponse;
-        try {
-            tmpResponse = getServer().request(tmpRequest);
-        } catch (SolrServerException | IOException e) {
-            throw new RuntimeException(e);
-        }
+		NamedList<Object> tmpResponse = getServer().request(tmpRequest);
 		tmpResponse = (NamedList<Object>) tmpResponse.get("analysis");
 		tmpResponse = (NamedList<Object>) tmpResponse.get("field_types");
 		tmpResponse = (NamedList<Object>) tmpResponse.get(aFieldType);
