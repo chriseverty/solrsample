@@ -3,9 +3,11 @@ package de.cheffe.solrsample.rule;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -94,7 +96,29 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
 			throw new RuntimeException(e);
 		}		
 	}
-	
+
+    public void addToIndex(SolrInputDocument ... aInputDocuments) {
+        LOG.info("adding documents to index " + StringUtils.join(aInputDocuments, "; "));
+        try {
+            SolrServer tmpServer = getServer();
+            tmpServer.add(Arrays.asList(aInputDocuments));
+            tmpServer.commit(true, true);
+        } catch (SolrServerException | IOException e) {
+            throw new RuntimeException(e);
+        }       
+    }
+    
+    public void addToIndex(Collection<SolrInputDocument> aInputDocuments) {
+        LOG.info("adding documents to index " + aInputDocuments);
+        try {
+            SolrServer tmpServer = getServer();
+            tmpServer.add(aInputDocuments);
+            tmpServer.commit(true, true);
+        } catch (SolrServerException | IOException e) {
+            throw new RuntimeException(e);
+        }       
+    }
+    
 	/**
 	 * Delete all documents from the index of the {@link #defaultCore}.
 	 */
