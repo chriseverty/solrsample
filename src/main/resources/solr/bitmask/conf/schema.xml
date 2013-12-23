@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<schema name="bitmaks" version="1.5">
+
+    <fields>
+        <field name="id" type="int" indexed="true" stored="true" multiValued="false" />
+        <field name="ints" type="int" indexed="true" stored="true" multiValued="true" />
+        <field name="strings" type="string" indexed="true" stored="true" multiValued="true" />
+    </fields>
+
+    <uniqueKey>id</uniqueKey>
+
+    <types>
+        <fieldType name="int" class="solr.TrieIntField"/>
+        <fieldType name="string" class="solr.StrField" />
+    </types>
+
+</schema>

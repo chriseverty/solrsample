@@ -29,16 +29,17 @@
     If 'null' (or absent), cores will not be manageable via request handler
   -->
   <cores adminPath="/admin/cores" defaultCoreName="core-1">
-    <core name="core-1" instanceDir="core-1" />
-    <core name="cyrillic" instanceDir="cyrillic" />
-    <core name="defaultFieldTypes" instanceDir="defaultFieldTypes" />
-    <core name="friend-core" instanceDir="friend-core" />
-    <core name="mlt" instanceDir="mlt" />
-    <core name="self-import" instanceDir="self-import" />
-    <core name="dih-core" instanceDir="dih-core" />
-    <core name="shard-1" instanceDir="shard-1" />
-    <core name="shard-2" instanceDir="shard-2" />
-    <core name="shard-unification" instanceDir="shard-unification" />
+    <core name="bitmask" instanceDir="bitmask" loadOnStartup="false" />
+    <core name="core-1" instanceDir="core-1" loadOnStartup="false" />
+    <core name="cyrillic" instanceDir="cyrillic" loadOnStartup="false" />
+    <core name="defaultFieldTypes" instanceDir="defaultFieldTypes" loadOnStartup="false" />
+    <core name="friend-core" instanceDir="friend-core" loadOnStartup="false" />
+    <core name="mlt" instanceDir="mlt" loadOnStartup="false" />
+    <core name="self-import" instanceDir="self-import" loadOnStartup="false" />
+    <core name="dih-core" instanceDir="dih-core" loadOnStartup="false" />
+    <core name="shard-1" instanceDir="shard-1" loadOnStartup="false" />
+    <core name="shard-2" instanceDir="shard-2" loadOnStartup="false" />
+    <core name="shard-unification" instanceDir="shard-unification" loadOnStartup="false" />
     <shardHandlerFactory class="HttpShardHandlerFactory">
         <int name="socketTimeOut">1000</int>
         <int name="connTimeOut">5000</int>

@@ -57,6 +57,24 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
 		}
 	}
 
+	/**
+     * Adds the given beans to the index and commits them.
+     * 
+     * @param aBeans
+     *            the beans to add
+     */
+    @SuppressWarnings("unchecked")
+    public void addBeansToIndex(T ... aBeans) {
+        LOG.info("adding documents to index " + aBeans);
+        try {
+            SolrServer tmpServer = getServer();
+            tmpServer.addBean(Arrays.asList(aBeans));
+            tmpServer.commit();
+        } catch (IOException | SolrServerException e) {
+            throw new RuntimeException(e);
+        }
+    }
+	
 	public void addBeanToIndex(T aBean, String aCoreName) {
 		LOG.info("adding document " + aBean + " to core " + aCoreName);
 		try {
@@ -109,7 +127,7 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
     }
     
     public void addToIndex(Collection<SolrInputDocument> aInputDocuments) {
-        LOG.info("adding documents to index " + aInputDocuments);
+        LOG.info("adding " + aInputDocuments.size() + " documents to index");
         try {
             SolrServer tmpServer = getServer();
             tmpServer.add(aInputDocuments);
