@@ -51,7 +51,7 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
 		try {
 			SolrServer tmpServer = getServer();
 			tmpServer.addBean(aBean);
-			tmpServer.commit();
+			commit(tmpServer);
 		} catch (IOException | SolrServerException e) {
 			throw new RuntimeException(e);
 		}
@@ -69,7 +69,7 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
         try {
             SolrServer tmpServer = getServer();
             tmpServer.addBean(Arrays.asList(aBeans));
-            tmpServer.commit();
+            commit(tmpServer);
         } catch (IOException | SolrServerException e) {
             throw new RuntimeException(e);
         }
@@ -80,7 +80,7 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
 		try {
 			SolrServer tmpServer = switchCore(aCoreName);
 			tmpServer.addBean(aBean);
-			tmpServer.commit();
+			commit(tmpServer);
 			switchCore(defaultCore);
 		} catch (IOException | SolrServerException e) {
 			throw new RuntimeException(e);
@@ -98,18 +98,23 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
 		try {
 			SolrServer tmpServer = getServer();
 			tmpServer.addBeans(aBeans);
-			tmpServer.commit(true, true);
+			commit(tmpServer);
 		} catch (SolrServerException | IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
+
+    private void commit(SolrServer aServer) throws SolrServerException, IOException {
+        LOG.info("commit");
+        aServer.commit();
+    }
 
 	public void addToIndex(SolrInputDocument aInputDocument) {
 		LOG.info("adding document to index " + aInputDocument);
 		try {
 			SolrServer tmpServer = getServer();
 			tmpServer.add(aInputDocument);
-			tmpServer.commit(true, true);
+			commit(tmpServer);
 		} catch (SolrServerException | IOException e) {
 			throw new RuntimeException(e);
 		}		
@@ -120,7 +125,7 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
         try {
             SolrServer tmpServer = getServer();
             tmpServer.add(Arrays.asList(aInputDocuments));
-            tmpServer.commit(true, true);
+            commit(tmpServer);
         } catch (SolrServerException | IOException e) {
             throw new RuntimeException(e);
         }       
@@ -131,7 +136,7 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
         try {
             SolrServer tmpServer = getServer();
             tmpServer.add(aInputDocuments);
-            tmpServer.commit(true, true);
+            commit(tmpServer);
         } catch (SolrServerException | IOException e) {
             throw new RuntimeException(e);
         }       
@@ -145,7 +150,7 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
 		try {
 			SolrServer tmpServer = getServer();
 			tmpServer.deleteByQuery("*:*");
-			tmpServer.commit();
+			commit(tmpServer);
 		} catch (SolrServerException | IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -159,7 +164,7 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
 		try {
 			SolrServer tmpServer = switchCore(aCore);
 			tmpServer.deleteByQuery("*:*");
-			tmpServer.commit();
+			commit(tmpServer);
 			switchCore(defaultCore);
 		} catch (SolrServerException | IOException e) {
 			throw new RuntimeException(e);
@@ -338,11 +343,30 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
 				tmpProcessed = Integer.valueOf(tmpMessages.get("Total Documents Processed").toString());
 			}
 		} while ("busy".equals(tmpStatus));
-		tmpServer.commit(true, true);
+		commit(tmpServer);
 		LOG.info("import done");
 		return tmpProcessed;
 	}
 
+
+    public void rollback() {
+        LOG.info("rollback");
+        try {
+            getServer().rollback();
+        } catch(SolrServerException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+	
+    public void optimize() {
+        LOG.info("optimize");
+        try {
+            getServer().optimize();
+        } catch(SolrServerException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
 	public SolrPingResponse ping() {
 		try {
 			return getServer().ping();

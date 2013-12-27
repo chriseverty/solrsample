@@ -1,7 +1,5 @@
 package de.cheffe.solrsample;
 
-import java.math.BigInteger;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +17,7 @@ public class BitMaskTest {
     private int numberOfCampaigns = 6;
 
     @Test
-    public void ping() throws Exception {
+    public void bitmask() throws Exception {
         int numberOfDocs = (int) Math.pow(2, numberOfCampaigns);
         List<SolrInputDocument> docs = new ArrayList<>(1000);
 

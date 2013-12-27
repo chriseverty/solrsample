@@ -35,6 +35,7 @@
     <core name="defaultFieldTypes" instanceDir="defaultFieldTypes" loadOnStartup="false" />
     <core name="friend-core" instanceDir="friend-core" loadOnStartup="false" />
     <core name="mlt" instanceDir="mlt" loadOnStartup="false" />
+    <core name="rollback" instanceDir="rollback" loadOnStartup="false" />
     <core name="self-import" instanceDir="self-import" loadOnStartup="false" />
     <core name="dih-core" instanceDir="dih-core" loadOnStartup="false" />
     <core name="shard-1" instanceDir="shard-1" loadOnStartup="false" />
