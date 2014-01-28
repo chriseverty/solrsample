@@ -2,9 +2,6 @@ package de.cheffe.solrsample.rule;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -38,15 +35,12 @@ public class EmbeddedHSQLDBTestHarness extends ExternalResource {
     protected void before() throws Throwable {
         super.before();
 
-        LOG.debug("trying to delete HSQL-DB home");
-        Path hsqlHomePath = Paths.get("target/temporary/hsqldb/" + name);
-        Files.deleteIfExists(hsqlHomePath);
-
+        LOG.debug("create hsql-db home");
         File hsqlHome = new File("target/temporary/hsqldb/" + name);
         hsqlHome.mkdirs();
 
+        LOG.debug("starting hsql server");
         String dbHome = "file:" + hsqlHome.getAbsolutePath();
-
         HsqlProperties p = new HsqlProperties();
         p.setProperty("server.database.0", dbHome);
         p.setProperty("server.dbname.0", name);
@@ -56,6 +50,12 @@ public class EmbeddedHSQLDBTestHarness extends ExternalResource {
         server.setLogWriter(new PrintWriter(System.out));
         server.setErrWriter(new PrintWriter(System.err));
         server.start();
+        
+        LOG.debug("clear public schema");
+        try (Connection con = createConnection()){
+            con.createStatement().execute("DROP SCHEMA PUBLIC CASCADE");
+            con.commit();
+        }
     }
 
     @Override
