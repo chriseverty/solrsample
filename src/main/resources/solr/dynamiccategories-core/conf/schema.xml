@@ -6,6 +6,8 @@
             type="int" indexed="true" stored="true" multiValued="false" />
         <field name="title" 
             type="text" indexed="true" stored="true" multiValued="false" />
+        <field name="categories" 
+            type="category" indexed="true" stored="true" multiValued="true" />
     </fields>
 
     <uniqueKey>id</uniqueKey>
@@ -13,10 +15,17 @@
     <types>
         <fieldType name="string" class="solr.StrField" />
         <fieldType name="int" class="solr.TrieIntField" />
+        
         <fieldType name="text" class="solr.TextField">
             <analyzer>
                 <tokenizer class="solr.StandardTokenizerFactory" />
                 <filter class="solr.LowerCaseFilterFactory" />
+            </analyzer>
+        </fieldType>
+        
+        <fieldType name="category" class="solr.TextField">
+            <analyzer>
+                <tokenizer class="solr.PathHierarchyTokenizerFactory" />
             </analyzer>
         </fieldType>
     </types>

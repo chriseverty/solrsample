@@ -1,7 +1,14 @@
 <dataConfig>
   <dataSource driver="org.hsqldb.jdbcDriver" url="jdbc:hsqldb:hsql://localhost:9001/mydb" user="sa" />
-  <document name="document" query="select * from document">
-    <field column="ID" name="id" />
-    <field column="TITLE" name="title" />
+  <document name="document">
+    <entity name="item" query="select * from document">
+      <field column="ID" name="id" />
+      <field column="TITLE" name="title" />
+      
+      <entity name="category" query="select CONCAT(c.name, '/', cv.name) cat FROM category c, category_value cv, document_category dc WHERE c.id=cv.category_id AND dc.category_value_id = cv.id AND dc.document_id='${item.ID}'">
+        <field column="CAT" name="categories" />
+      </entity>
+      
+    </entity>
   </document>
 </dataConfig>

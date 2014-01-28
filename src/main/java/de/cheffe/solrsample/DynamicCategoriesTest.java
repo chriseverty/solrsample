@@ -10,17 +10,21 @@ import liquibase.Liquibase;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.FileSystemResourceAccessor;
 
+import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.beans.Field;
+import org.apache.solr.client.solrj.response.QueryResponse;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 
 import de.cheffe.solrsample.rule.EmbeddedHSQLDBTestHarness;
 import de.cheffe.solrsample.rule.EmbeddedSolrServerResource;
 
+@FixMethodOrder
 public class DynamicCategoriesTest {
 
     @ClassRule
@@ -96,6 +100,23 @@ public class DynamicCategoriesTest {
         Assert.assertEquals(100, tmpCount);
     }
 
+    @Test
+    public void runImport() throws Exception {
+        solr.runDataImportHandler("/dataimport");
+        QueryResponse queryResponse = solr.query("*:*");
+        Assert.assertEquals(100, queryResponse.getResults().getNumFound());
+    }
+
+    @Test
+    public void facet() throws Exception {
+        SolrQuery query = new SolrQuery("*:*");
+        query.setFacet(true);
+        query.setFacetPrefix("categories", "category 1");
+        query.setFilterQueries("{!raw f=categories}category 1");
+        QueryResponse queryResponse = solr.query(query);
+        Assert.assertEquals(2, queryResponse.getResults().getNumFound());
+    }
+    
     @After
     public void disconnect() throws SQLException {
         connection.close();
@@ -104,6 +125,10 @@ public class DynamicCategoriesTest {
     public static class Document {
         @Field
         public int id;
+        @Field
+        public String title;
+        @Field
+        public String[] categories;
     }
 
 }
