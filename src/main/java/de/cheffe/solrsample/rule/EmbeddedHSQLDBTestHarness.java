@@ -2,6 +2,9 @@ package de.cheffe.solrsample.rule;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -9,8 +12,12 @@ import java.sql.SQLException;
 import org.hsqldb.persist.HsqlProperties;
 import org.hsqldb.server.Server;
 import org.junit.rules.ExternalResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EmbeddedHSQLDBTestHarness extends ExternalResource {
+
+    private static final Logger LOG = LoggerFactory.getLogger(EmbeddedHSQLDBTestHarness.class);
 
     private Server server;
 
@@ -31,10 +38,11 @@ public class EmbeddedHSQLDBTestHarness extends ExternalResource {
     protected void before() throws Throwable {
         super.before();
 
+        LOG.debug("trying to delete HSQL-DB home");
+        Path hsqlHomePath = Paths.get("target/temporary/hsqldb/" + name);
+        Files.deleteIfExists(hsqlHomePath);
+
         File hsqlHome = new File("target/temporary/hsqldb/" + name);
-        if (hsqlHome.exists()) {
-            hsqlHome.delete();
-        }
         hsqlHome.mkdirs();
 
         String dbHome = "file:" + hsqlHome.getAbsolutePath();
