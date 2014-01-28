@@ -1,0 +1,7 @@
+<dataConfig>
+  <dataSource driver="org.hsqldb.jdbcDriver" url="jdbc:hsqldb:hsql://localhost:9001/mydb" user="sa" />
+  <document name="document" query="select * from document">
+    <field column="ID" name="id" />
+    <field column="TITLE" name="title" />
+  </document>
+</dataConfig>
