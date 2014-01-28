@@ -59,7 +59,7 @@ public class HSQLImportTest {
         // run liquibase to setup the database schema and load the generated
         // persons
         Connection tmpConnection = hsqldb.createConnection();
-        File tmpChangeSet = new File("src/main/resources/database/createDatabase.xml");
+        File tmpChangeSet = new File("src/main/resources/database/createPersonsDB.xml");
         Liquibase tmpLiquibase = new Liquibase(tmpChangeSet.getAbsolutePath(), new FileSystemResourceAccessor(), new JdbcConnection(tmpConnection));
         tmpLiquibase.update(null);
         tmpConnection.close();
