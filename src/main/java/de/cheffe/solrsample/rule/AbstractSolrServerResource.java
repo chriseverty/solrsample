@@ -358,6 +358,19 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
         }
     }
 	
+    public void requestRecovery() {
+        LOG.info("requesting recovery");
+        try {
+            CoreAdminRequest tmpRequest = new CoreAdminRequest();
+            tmpRequest.setAction(CoreAdminAction.REQUESTRECOVERY);
+            tmpRequest.setCoreName(defaultCore);
+            CoreAdminResponse tmpResponse = tmpRequest.process(getServer());
+            System.out.println(tmpResponse);
+        } catch(SolrServerException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
     public void optimize() {
         LOG.info("optimize");
         try {

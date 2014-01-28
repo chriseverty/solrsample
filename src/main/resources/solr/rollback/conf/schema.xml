@@ -5,13 +5,15 @@
     <fields>
         <field name="id" type="int" indexed="true" stored="true" multiValued="false" />
         <field name="title" type="string" indexed="true" stored="true" multiValued="false" />
+        <field name="_version_" type="long" indexed="true" stored="true"/>
     </fields>
 
     <uniqueKey>id</uniqueKey>
 
     <types>
-        <fieldType name="int" class="solr.TrieIntField"/>
+        <fieldType name="int" class="solr.TrieIntField" />
         <fieldType name="string" class="solr.StrField" />
+        <fieldType name="long" class="solr.TrieLongField" />
     </types>
 
 </schema>

@@ -27,22 +27,22 @@ public class RollbackTest {
         solr.addToIndex(createDocument());
         printTitleOfDocsInIndex();
         
-        solr.rollback();
+        solr.requestRecovery();
         printTitleOfDocsInIndex();
         
-        solr.rollback();
+        solr.requestRecovery();
         printTitleOfDocsInIndex();
         
-        solr.rollback();
+        solr.requestRecovery();
         printTitleOfDocsInIndex();
         
-        solr.rollback();
+        solr.requestRecovery();
         printTitleOfDocsInIndex();
         
-        solr.rollback();
+        solr.requestRecovery();
         printTitleOfDocsInIndex();
         
-        solr.rollback();
+        solr.requestRecovery();
         printTitleOfDocsInIndex();
     }
 

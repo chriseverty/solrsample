@@ -24,6 +24,9 @@
 
   <updateHandler class="solr.DirectUpdateHandler2">
     <maxPendingDeletes>1000</maxPendingDeletes>
+    <updateLog>
+      <str name="dir">${solr.ulog.dir:}</str>
+    </updateLog>
   </updateHandler>
 
   <query>
