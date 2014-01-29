@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<schema name="friends" version="1.0">
+
+    <fields>
+        <field name="id" 
+            type="int" indexed="true" stored="true" multiValued="false" />
+        <field name="title" 
+            type="string" indexed="true" stored="true" multiValued="false" />
+        <field name="date" 
+            type="tdate" indexed="true" stored="true" multiValued="false" />
+    </fields>
+
+    <uniqueKey>id</uniqueKey>
+    
+    <types>
+        <fieldType name="int" class="solr.TrieIntField" />
+        <fieldType name="tdate" class="solr.TrieDateField" />      
+        <fieldType name="string" class="solr.StrField" />  
+    </types>
+</schema>

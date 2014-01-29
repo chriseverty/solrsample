@@ -32,6 +32,7 @@
     <core name="bitmask" instanceDir="bitmask" loadOnStartup="false" />
     <core name="core-1" instanceDir="core-1" loadOnStartup="false" />
     <core name="cyrillic" instanceDir="cyrillic" loadOnStartup="false" />
+    <core name="dateboost-core" instanceDir="dateboost-core" loadOnStartup="false" />
     <core name="defaultFieldTypes" instanceDir="defaultFieldTypes" loadOnStartup="false" />
     <core name="friend-core" instanceDir="friend-core" loadOnStartup="false" />
     <core name="mlt" instanceDir="mlt" loadOnStartup="false" />
