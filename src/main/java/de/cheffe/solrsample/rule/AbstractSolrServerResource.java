@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.SolrPingResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
+import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.params.CoreAdminParams.CoreAdminAction;
 import org.apache.solr.common.params.ModifiableSolrParams;
@@ -68,7 +70,7 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
         LOG.info("adding documents to index " + aBeans);
         try {
             SolrServer tmpServer = getServer();
-            tmpServer.addBean(Arrays.asList(aBeans));
+            tmpServer.addBeans(Arrays.asList(aBeans));
             commit(tmpServer);
         } catch (IOException | SolrServerException e) {
             throw new RuntimeException(e);
@@ -387,5 +389,63 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
 			throw new RuntimeException(e);
 		}
 	}
+
+    public void print(QueryResponse response) {
+        LOG.info("print results");
+        SolrDocumentList results = response.getResults();
+        if(results.getNumFound() == 0) {
+            LOG.debug("results empty, print nothing");
+            return;
+        }
+        
+        // determine max field width
+        Map<String, Integer> fieldWidth = new HashMap<>();
+        for(int i = 0; i < results.size(); i++) {
+            for(String fieldName : results.get(i).getFieldNames()) {
+                Integer maxWidth = fieldWidth.get(fieldName);
+                Integer currentWidth = results.get(i).getFieldValue(fieldName).toString().length();
+                if(maxWidth == null) {
+                    fieldWidth.put(fieldName, fieldName.length());
+                    maxWidth = fieldName.length();
+                }
+                if(maxWidth.intValue() < currentWidth.intValue()) {
+                    fieldWidth.put(fieldName, currentWidth);
+                }
+            }
+        }
+
+        printLine(results, fieldWidth);
+        
+        // print header
+        System.out.print("|");
+        for(String fieldName : results.get(0).getFieldNames()) {
+            System.out.print(StringUtils.rightPad(fieldName, fieldWidth.get(fieldName)));
+            System.out.print("|");
+        }
+        System.out.println("");
+
+        printLine(results, fieldWidth);
+        
+        // print body
+        for(int i = 0; i < results.size(); i++) {
+            System.out.print("|");
+            for(String fieldName : results.get(i).getFieldNames()) {
+                String value = results.get(i).getFieldValue(fieldName).toString();
+                System.out.print(StringUtils.rightPad(value, fieldWidth.get(fieldName)));
+                System.out.print("|");                
+            }
+            System.out.println("");
+            printLine(results, fieldWidth);
+        }
+    }
+
+    private void printLine(SolrDocumentList results, Map<String, Integer> fieldWidth) {
+        System.out.print("+");
+        for(String fieldName : results.get(0).getFieldNames()) {
+            System.out.print(StringUtils.rightPad("", fieldWidth.get(fieldName), "-"));
+            System.out.print("+");
+        }
+        System.out.println("");
+    }
 	
 }
