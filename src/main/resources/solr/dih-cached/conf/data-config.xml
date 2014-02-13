@@ -1,0 +1,28 @@
+<dataConfig>
+<dataSource driver="org.hsqldb.jdbcDriver" url="jdbc:hsqldb:hsql://localhost:9001/mydb" user="sa" />
+    <document name="publications">
+        <entity name="publication" query="
+            SELECT
+                sm_publications.id AS p_id,
+                sm_publications.publ_year AS p_year,
+                sm_publications.doi AS p_doi,
+                sm_publications.conference_id
+            FROM sm_publications">
+            <field column="P_ID" name="id" />
+            <field column="P_YEAR" name="year" />
+            <field column="P_DOI" name="doi" />
+
+            <entity name="conference" query="SELECT id AS CID,full_name FROM sm_conferences"
+                    processor="CachedSqlEntityProcessor" cacheKey="CID" cacheLookup="publication.CONFERENCE_ID">
+                <field column="full_name" name="conference" />
+            </entity>
+
+<!-- 
+            <entity name="conference" query="SELECT * FROM sm_conferences WHERE sm_conferences.id='${publication.CONFERENCE_ID}'"
+                    processor="CachedSqlEntityProcessor">
+                <field column="full_name" name="conference" />
+            </entity>
+ -->
+        </entity>
+    </document>
+</dataConfig>

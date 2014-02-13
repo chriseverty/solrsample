@@ -1,11 +1,11 @@
 package de.cheffe.solrsample;
 
-import java.io.IOException;
-import java.util.List;
-
+import de.cheffe.solrsample.rule.JettySolrServerResource;
+import org.apache.commons.io.IOUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.beans.Field;
+import org.apache.solr.client.solrj.util.ClientUtils;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -13,7 +13,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.cheffe.solrsample.rule.JettySolrServerResource;
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
 
 /**
  * <p>
@@ -92,6 +94,23 @@ public class ShardUnificationTest {
 		}
 	}
 
+	@Test
+	public void printResponseAsXML() throws IOException {
+	    SolrQuery query = new SolrQuery("*:*");
+	    // set indent == true, so that the xml output is formatted
+	    query.set("indent", true);
+	    
+	    // use org.apache.solr.client.solrj.util.ClientUtils 
+	    // to make a URL compatible query string of your SolrQuery
+	    String urlQueryString = ClientUtils.toQueryString(query, false);
+	    String solrURL = "http://localhost:8080/solr/shard-1/select";
+	    URL url = new URL(solrURL + urlQueryString);
+	    // use org.apache.commons.io.IOUtils to do the http handling for you
+	    String xmlResponse = IOUtils.toString(url);
+	    // have a look
+	    System.out.println(xmlResponse);
+	}
+	
 	public static class UnifiedDocument {
 		@Field
 		public int id;

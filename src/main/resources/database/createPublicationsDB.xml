@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="1" author="cheffe">
+        <createTable tableName="sm_publications">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="conference_id" type="int"/>
+            <column name="journal_id" type="int"/>
+            <column name="title" type="varchar(50)"/>
+            <column name="title_hash" type="int"/>
+            <column name="abstract" type="varchar(4000)"/>
+            <column name="publ_year" type="int"/>
+            <column name="doi" type="varchar(500)"/>
+            <column name="created" type="DATETIME"/>
+            <column name="modified" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="cheffe">
+        <createTable tableName="sm_conferences">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="full_name" type="varchar(1000)"/>
+            <column name="full_name_hash" type="int"/>
+            <column name="short_name" type="varchar(500)"/>
+            <column name="created" type="date"/>
+            <column name="modified" type="date"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="cheffe" failOnError="false" runAlways="true">
+        <sql>
+          truncate table sm_publications RESTART IDENTITY;
+          truncate table sm_conferences RESTART IDENTITY;
+        </sql>
+        <rollback></rollback>
+    </changeSet>
+
+</databaseChangeLog>

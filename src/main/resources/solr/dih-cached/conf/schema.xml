@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<schema name="dih-cached" version="1.0">
+
+    <fields>
+        <field name="_version_"     type="long" indexed="true" stored="true"/>
+        <field name="id"            type="int" indexed="true" stored="true" required="true" multiValued="false" />
+        <field name="conference"    type="string" indexed="true" stored="true" />
+        <field name="year"          type="int" indexed="true" stored="true" />
+        <field name="doi"           type="string" indexed="false" stored="true" />
+    </fields>
+
+    <uniqueKey>id</uniqueKey>
+    
+    <types>
+        <fieldType name="string" class="solr.StrField" />
+        <fieldType name="int" class="solr.TrieIntField" />
+        <fieldType name="long" class="solr.TrieLongField" />
+    </types>
+</schema>
