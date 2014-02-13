@@ -1,5 +1,5 @@
 <dataConfig>
-    <dataSource driver="org.hsqldb.jdbcDriver" url="jdbc:hsqldb:hsql://localhost:9001/mydb" user="sa" />
+<dataSource driver="org.hsqldb.jdbcDriver" url="jdbc:hsqldb:hsql://localhost:9001/mydb" user="sa" />
     <document name="publications">
         <entity name="publication" query="
             SELECT
