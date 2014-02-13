@@ -74,6 +74,12 @@ public class DIHCachedTest {
         Assert.assertEquals(1, solr.query("*:*").getResults().getNumFound());
     }
 
+    @Test
+    public void runImportWithFault() throws Exception {
+        solr.runDataImportHandler("/dataimport-fault");
+        Assert.assertEquals(1, solr.query("*:*").getResults().getNumFound());
+    }
+
     @After
     public void disconnect() throws SQLException {
         connection.close();

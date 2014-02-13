@@ -8,6 +8,7 @@ import java.util.Date;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.beans.Field;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.util.DateUtil;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -40,6 +41,8 @@ public class DateBoostTest {
         QueryResponse response = solr.query(query);
         solr.print(response);
 
+        System.out.println(ClientUtils.toQueryString(query, false));
+
         StringBuilder actualOrder = new StringBuilder();
         for(Document  doc : response.getBeans(Document.class)) {
             actualOrder.append(doc.title);
@@ -57,8 +60,9 @@ public class DateBoostTest {
         public Date date;
         
         public Document() {
+            // for Solr that creates document by reflection
         }
-        
+
         public Document(int id, String title, Date date) {
             super();
             this.id = id;

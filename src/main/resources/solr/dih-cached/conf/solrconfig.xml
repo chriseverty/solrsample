@@ -55,6 +55,12 @@
         </lst>
     </requestHandler>
 
+    <requestHandler name="/dataimport-fault" class="org.apache.solr.handler.dataimport.DataImportHandler">
+        <lst name="defaults">
+            <str name="config">data-config-fault.xml</str>
+        </lst>
+    </requestHandler>
+
     <requestHandler name="/admin/" class="org.apache.solr.handler.admin.AdminHandlers" />
 
     <requestHandler name="/admin/ping" class="solr.PingRequestHandler">

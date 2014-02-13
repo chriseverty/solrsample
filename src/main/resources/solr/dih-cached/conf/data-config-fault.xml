@@ -1,5 +1,5 @@
 <dataConfig>
-<dataSource driver="org.hsqldb.jdbcDriver" url="jdbc:hsqldb:hsql://localhost:9001/mydb" user="sa" />
+    <dataSource driver="org.hsqldb.jdbcDriver" url="jdbc:hsqldb:hsql://localhost:9001/mydb" user="sa" />
     <document name="publications">
         <entity name="publication" query="
             SELECT
@@ -13,7 +13,7 @@
             <field column="P_DOI" name="doi" />
 
             <entity name="conference" query="SELECT id AS CID,full_name FROM sm_conferences"
-                    processor="CachedSqlEntityProcessor" cacheKey="CID" cacheLookup="publication.CONFERENCE_ID">
+                    processor="CachedSqlEntityProcessor" cacheKey="CID" cacheLookup="publication.conference_id">
                 <field column="full_name" name="conference" />
             </entity>
 

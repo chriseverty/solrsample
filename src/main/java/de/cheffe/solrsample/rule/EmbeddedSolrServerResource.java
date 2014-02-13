@@ -3,6 +3,7 @@ package de.cheffe.solrsample.rule;
 import java.io.File;
 import java.util.List;
 
+import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.core.CoreContainer;
@@ -49,6 +50,11 @@ public class EmbeddedSolrServerResource<T extends Object> extends AbstractSolrSe
 	private EmbeddedSolrServer server;
 	private CoreContainer container;
 	private String pathToSolrXml;
+
+
+    static {
+        DOMConfigurator.configure("src/main/java/log4j.xml");
+    }
 
 	/**
 	 * Defines that the solr.xml is to be found within resource package 'solr'.
