@@ -14,7 +14,7 @@ import de.cheffe.solrsample.rule.EmbeddedSolrServerResource;
 public class DefineOrderOfResultTest {
 
 	@ClassRule
-	public static EmbeddedSolrServerResource<Object> solr = new EmbeddedSolrServerResource<>();
+	public static EmbeddedSolrServerResource<Object> solr = new EmbeddedSolrServerResource<>("core-1");
 
 	@BeforeClass
 	public static void setupDocuments() {

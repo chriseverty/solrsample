@@ -1,10 +1,6 @@
 package de.cheffe.solrsample;
 
-import static org.junit.Assert.*;
-
-import java.text.ParseException;
-import java.util.Date;
-
+import de.cheffe.solrsample.rule.EmbeddedSolrServerResource;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.beans.Field;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -14,7 +10,10 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import de.cheffe.solrsample.rule.EmbeddedSolrServerResource;
+import java.text.ParseException;
+import java.util.Date;
+
+import static org.junit.Assert.assertEquals;
 
 public class DateBoostTest {
 
@@ -48,7 +47,7 @@ public class DateBoostTest {
             actualOrder.append(doc.title);
             actualOrder.append(',');
         }
-        assertEquals("A,C,B,E,D", actualOrder.toString());
+        assertEquals("A,B,C,D,E,", actualOrder.toString());
     }
 
     public static class Document {

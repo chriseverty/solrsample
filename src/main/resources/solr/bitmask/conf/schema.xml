@@ -6,6 +6,7 @@
         <field name="id" type="int" indexed="true" stored="true" multiValued="false" />
         <field name="ints" type="int" indexed="true" stored="true" multiValued="true" />
         <field name="strings" type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="hash" type="string" indexed="true" stored="true" />
     </fields>
 
     <uniqueKey>id</uniqueKey>
@@ -13,6 +14,13 @@
     <types>
         <fieldType name="int" class="solr.TrieIntField"/>
         <fieldType name="string" class="solr.StrField" />
+
+        <fieldType name="hashField" class="solr.TextField">
+            <analyzer>
+                <tokenizer class="solr.NGramTokenizerFactory" minGramSize="1" maxGramSize="1"/>
+            </analyzer>
+        </fieldType>
+
     </types>
 
 </schema>

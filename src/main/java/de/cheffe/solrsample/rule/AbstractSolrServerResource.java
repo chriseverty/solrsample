@@ -394,7 +394,9 @@ public abstract class AbstractSolrServerResource<T extends Object> extends Exter
         LOG.info("print results");
         SolrDocumentList results = response.getResults();
         if(results.getNumFound() == 0) {
-            LOG.debug("results empty, print nothing");
+            System.out.println("+---------------+");
+            System.out.println("| nothing found |");
+            System.out.println("+---------------+");
             return;
         }
         

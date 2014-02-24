@@ -11,7 +11,7 @@ import de.cheffe.solrsample.rule.EmbeddedSolrServerResource;
 public class PingTest {
 
 	@ClassRule
-	public static EmbeddedSolrServerResource<Object> solr = new EmbeddedSolrServerResource<>();
+	public static EmbeddedSolrServerResource<Object> solr = new EmbeddedSolrServerResource<>("core-1");
 
 	@Test
 	public void ping() throws Exception {

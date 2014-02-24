@@ -1,13 +1,13 @@
 package de.cheffe.solrsample;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import de.cheffe.solrsample.rule.EmbeddedSolrServerResource;
+import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.common.SolrInputDocument;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import de.cheffe.solrsample.rule.EmbeddedSolrServerResource;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BitMaskTest {
 
@@ -54,6 +54,24 @@ public class BitMaskTest {
         System.out.println(solr.query("ints:(1 OR 2)").getResults().getNumFound());
         System.out.println(solr.query("strings:(1_1 OR 2_1)").getResults().getNumFound());
         System.out.println(solr.query("strings:((1_1 OR 2_1) AND 4_0)").getResults().getNumFound());
+    }
+
+    @Test
+    public void hashField() {
+        // setup
+        SolrInputDocument document = new SolrInputDocument();
+        document.setField("id", 1);
+        document.setField("hash", "004143737f7f7f7f");
+        solr.addToIndex(document);
+
+        SolrInputDocument document2 = new SolrInputDocument();
+        document2.setField("id", 2);
+        document2.setField("hash", "0041417f7f7f7f7f");
+        solr.addToIndex(document2);
+
+        SolrQuery query = new SolrQuery("hash:0041417f7f7f7f7f~0.8");
+        query.setFields("hash", "strdist(\"0041417f7f7f7f7f\", hash, edit)");
+        solr.print(solr.query(query));
     }
 
 }

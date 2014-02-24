@@ -15,38 +15,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
+<solr>
 
-<!--
- All (relative) paths are relative to the installation path
-
-  persistent: Save changes made via the API to this file
-  sharedLib: path to a lib directory that will be shared across all cores
--->
-<solr persistent="false" sharedLib="lib">
-
-  <!--
-  adminPath: RequestHandler path to manage cores.
-    If 'null' (or absent), cores will not be manageable via request handler
-  -->
-  <cores adminPath="/admin/cores" defaultCoreName="core-1">
-    <core name="bitmask" instanceDir="bitmask" loadOnStartup="false" />
-    <core name="core-1" instanceDir="core-1" loadOnStartup="false" />
-    <core name="cyrillic" instanceDir="cyrillic" loadOnStartup="false" />
-    <core name="dateboost-core" instanceDir="dateboost-core" loadOnStartup="false" />
-    <core name="defaultFieldTypes" instanceDir="defaultFieldTypes" loadOnStartup="false" />
-    <core name="friend-core" instanceDir="friend-core" loadOnStartup="false" />
-    <core name="mlt" instanceDir="mlt" loadOnStartup="false" />
-    <core name="rollback" instanceDir="rollback" loadOnStartup="false" />
-    <core name="self-import" instanceDir="self-import" loadOnStartup="false" />
-    <core name="dih-cached" instanceDir="dih-cached" loadOnStartup="false" />
-    <core name="dih-core" instanceDir="dih-core" loadOnStartup="false" />
-    <core name="dynamiccategories-core" instanceDir="dynamiccategories-core" loadOnStartup="false" />
-    <core name="shard-1" instanceDir="shard-1" loadOnStartup="false" />
-    <core name="shard-2" instanceDir="shard-2" loadOnStartup="false" />
-    <core name="shard-unification" instanceDir="shard-unification" loadOnStartup="false" />
     <shardHandlerFactory class="HttpShardHandlerFactory">
         <int name="socketTimeOut">1000</int>
         <int name="connTimeOut">5000</int>
     </shardHandlerFactory>
-  </cores>
 </solr>

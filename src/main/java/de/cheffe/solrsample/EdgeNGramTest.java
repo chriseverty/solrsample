@@ -10,7 +10,7 @@ import de.cheffe.solrsample.rule.EmbeddedSolrServerResource;
 public class EdgeNGramTest {
 
 	@ClassRule
-	public static EmbeddedSolrServerResource<Object> h = new EmbeddedSolrServerResource<>();
+	public static EmbeddedSolrServerResource<Object> h = new EmbeddedSolrServerResource<>("core-1");
 
 	@Test
 	public void analyse() throws Exception {
