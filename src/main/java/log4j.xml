@@ -11,7 +11,7 @@
   </appender>
   
   <logger name="de.cheffe.solrsample">
-    <level value="debug" />
+    <level value="info" />
   </logger>
 
   <logger name="org.apache.solr">
