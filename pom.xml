@@ -46,6 +46,14 @@
                     <artifactId>hadoop-hdfs</artifactId>
                     <groupId>org.apache.hadoop</groupId>
                 </exclusion>
+                <exclusion>
+                  <artifactId>hadoop-annotations</artifactId>
+                  <groupId>org.apache.hadoop</groupId>
+                </exclusion>
+                <exclusion>
+                  <artifactId>hadoop-auth</artifactId>
+                  <groupId>org.apache.hadoop</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -99,7 +107,7 @@
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
+            <artifactId>slf4j-log4j12</artifactId>
             <version>1.6.1</version>
             <scope>compile</scope>
         </dependency>
