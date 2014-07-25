@@ -107,8 +107,8 @@ public class EmbeddedSolrServerResource<T extends Object> extends AbstractSolrSe
     protected void after() {
         super.after();
         LOG.info("shutdown embedded solr");
-        server.shutdown();
         container.shutdown();
+        server.shutdown();
     }
 
     @Override
