@@ -3,9 +3,9 @@
 <schema name="string-vs-trieint" version="1.5">
 
   <fields>
-    <field name="id_int"    type="int" indexed="true" stored="true" multiValued="false" />
-    <field name="id_tint"   type="tint" indexed="true" stored="true" multiValued="false" />
-    <field name="id_string" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="id_int"    type="int" indexed="true" stored="true" multiValued="true" />
+    <field name="id_tint"   type="tint" indexed="true" stored="true" multiValued="true" />
+    <field name="id_string" type="string" indexed="true" stored="true" multiValued="true" />
   </fields>
 
   <types>
